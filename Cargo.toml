@@ -1,0 +1,18 @@
+[package]
+name = "rocket_practice"
+version = "0.1.0"
+authors = ["kumarmo2 <kr.mohit6794@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rocket = "0.4.4"
+serde = { version = "1.0", features = ["derive"] }
+
+[dependencies.rocket_contrib]
+version = "0.4.4"
+default-features = false
+features = ["serve", "json", "diesel_mysql_pool"]
+# features = ["serve", "json", "diesel_postgres_pool"]
+# features = ["serve", "json" ]

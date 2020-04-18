@@ -1,0 +1,7 @@
+[dev]
+address = "localhost"
+custom_key = "devEnvironment"
+
+[stage]
+address = "0.0.0.0"
+custom_key = "stageEnvironment"
