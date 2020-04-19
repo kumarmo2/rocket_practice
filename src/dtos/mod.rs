@@ -7,12 +7,12 @@ use rocket::response::{Responder, Response};
 use serde::{Deserialize, Serialize};
 use std::io::Cursor;
 
-#[derive(Serialize, Deserialize)]
-pub struct User {
-    pub id: u32,
-    pub name: String,
-    pub age: u32,
-}
+// #[derive(Serialize, Deserialize)]
+// pub struct User {
+//     pub id: u32,
+//     pub name: String,
+//     pub age: u32,
+// }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CreateRoomRequest {
@@ -23,6 +23,13 @@ pub struct CreateRoomRequest {
     #[serde(rename = "isPublic")]
     pub is_public: bool,
     pub members: Option<Vec<u32>>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct CreateUserRequest {
+    pub name: String,
+    pub age: u32,
+    pub email: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

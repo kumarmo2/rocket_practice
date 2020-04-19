@@ -1,7 +1,12 @@
 [dev]
-address = "localhost"
+address = "0.0.0.0"
 custom_key = "devEnvironment"
 
 [stage]
 address = "0.0.0.0"
 custom_key = "stageEnvironment"
+
+
+
+[global.databases.mysql]
+url = "mysql://root:root@159.89.171.54/practice"

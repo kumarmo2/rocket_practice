@@ -1,5 +1,6 @@
 use crate::dtos::request_guards::ApiKey::ApiKey;
-use crate::dtos::User;
+use crate::dtos::CreateUserRequest;
+use crate::models::MySqlDb;
 use rocket::http::RawStr;
 use rocket_contrib::json::Json;
 
@@ -36,7 +37,11 @@ pub fn user_authorized_endpoint(apiKey: ApiKey, name: &RawStr) -> String {
     )
 }
 
-#[post("/", data = "<user>")]
-pub fn create(apiKey: ApiKey, user: Json<User>) -> Json<User> {
-    Json(user.0)
+#[post("/", data = "<user_request>")]
+pub fn create(
+    apiKey: ApiKey,
+    user_request: Json<CreateUserRequest>,
+    conn: MySqlDb,
+) -> Json<CreateUserRequest> {
+    Json(user_request.0)
 }

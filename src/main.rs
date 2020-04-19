@@ -1,6 +1,9 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
 #[macro_use]
+extern crate rocket_contrib;
+
+#[macro_use]
 extern crate rocket;
 use rocket::fairing::AdHoc;
 use rocket_contrib::serve::StaticFiles;
@@ -20,7 +23,7 @@ fn main() {
     rocket::ignite()
         .mount("/", routes![routes::home::index,])
         .mount(
-            "/user",
+            "/api/users",
             routes![
                 user::big_hello,
                 // user::get_user_by_id,
@@ -40,6 +43,7 @@ fn main() {
             println!("config fairing");
             Ok(rocket.manage(models::CustomKey(val)))
         }))
+        .attach(models::MySqlDb::fairing())
         .register(catchers![error_catchers::bad_request])
         .launch();
 }

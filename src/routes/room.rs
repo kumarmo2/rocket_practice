@@ -1,6 +1,6 @@
 use crate::dtos::request_guards::ApiKey::ApiKey;
 use crate::dtos::{CreateRoomRequest, RoomDto};
-use crate::models::{CounterWrapper, CustomKey, Room};
+use crate::models::{CounterWrapper, CustomKey, MySqlDb, Room};
 use rocket::State;
 use rocket_contrib::json::Json;
 use std::thread;
@@ -17,6 +17,7 @@ pub fn get(
     id: u32,
     custom_key: State<CustomKey>,
     counter_wrapper: State<CounterWrapper>,
+    conn: MySqlDb,
 ) -> RoomDto {
     let room = Room::get_dummy();
     let result = RoomDto::from_room_model(room);

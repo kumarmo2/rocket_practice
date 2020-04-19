@@ -2,6 +2,7 @@ use rocket::http::Status;
 use rocket::request::Request;
 use rocket::response;
 use rocket::response::{Responder, Response};
+use rocket_contrib::databases::diesel;
 use std::io::Cursor;
 use std::sync::{Arc, Mutex};
 
@@ -9,6 +10,7 @@ pub struct User {
     pub id: u32,
     pub name: String,
     pub age: u32,
+    pub email: String,
 }
 
 impl Default for User {
@@ -16,6 +18,7 @@ impl Default for User {
         User {
             id: 0,
             name: String::new(),
+            email: String::new(),
             age: 0,
         }
     }
@@ -77,3 +80,6 @@ impl Default for CounterWrapper {
         }
     }
 }
+
+#[database("mysql")]
+pub struct MySqlDb(diesel::MysqlConnection);
