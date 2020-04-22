@@ -9,6 +9,9 @@ edition = "2018"
 [dependencies]
 rocket = "0.4.4"
 serde = { version = "1.0", features = ["derive"] }
+diesel = { version = "1.0.0", features = ["mysql"] }
+base64 = "0.12.0"
+uuid = {version = "0.8.1", features = ["v4"]}
 
 [dependencies.rocket_contrib]
 version = "0.4.4"

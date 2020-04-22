@@ -1,6 +1,7 @@
 pub mod request_guards;
 
 use crate::models::Room;
+use crate::schema::users;
 use rocket::request::Request;
 use rocket::response;
 use rocket::response::{Responder, Response};
@@ -17,25 +18,27 @@ use std::io::Cursor;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CreateRoomRequest {
     #[serde(rename = "creatorUserId")]
-    pub creator_user_id: u32,
+    pub creator_user_id: i32,
     #[serde(rename = "roomName")]
     pub room_name: Option<String>,
     #[serde(rename = "isPublic")]
-    pub is_public: bool,
-    pub members: Option<Vec<u32>>,
+    pub is_public: Option<bool>,
+    // pub members: Option<Vec<u32>>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Insertable)]
+#[table_name = "users"]
+// #[derive(Serialize, Deserialize, Debug)]
 pub struct CreateUserRequest {
     pub name: String,
-    pub age: u32,
+    pub age: i32,
     pub email: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 // pub struct RoomDto<'a> {
 pub struct RoomDto {
-    pub id: u32,
+    pub id: i32,
     pub name: String,
     pub path: String,
 }
@@ -49,7 +52,15 @@ impl RoomDto {
             // name: &model.name,
             name: model.name,
             // path: &model.path,
-            path: model.path,
+            path: model.url_identifier,
+        }
+    }
+
+    pub fn dummy_room_dto() -> RoomDto {
+        RoomDto {
+            id: 45,
+            name: "some_room".to_string(),
+            path: "dsfgdg".to_string(),
         }
     }
 }

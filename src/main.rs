@@ -2,6 +2,8 @@
 
 #[macro_use]
 extern crate rocket_contrib;
+#[macro_use]
+extern crate diesel;
 
 #[macro_use]
 extern crate rocket;
@@ -10,10 +12,13 @@ use rocket_contrib::serve::StaticFiles;
 
 // mod routes::home;
 
+mod business;
 mod dtos;
 mod error_catchers;
 mod models;
 mod routes;
+mod schema;
+mod utils;
 
 use routes::home;
 use routes::room;
@@ -31,8 +36,8 @@ fn main() {
                 user::create,
             ],
         )
-        .mount("/api/rooms", routes![room::create, room::get])
-        .mount("/", StaticFiles::from("./static"))
+        .mount("/api/rooms", routes![room::create, room::get, room::get_all])
+        .mount("/public", StaticFiles::from("./static"))
         .manage(models::CounterWrapper::default())
         .attach(AdHoc::on_attach("config_fairing", |rocket| {
             let val = rocket
