@@ -1,14 +1,16 @@
 use crate::business::room;
 use crate::dtos::request_guards::ApiKey::ApiKey;
-use crate::dtos::{CreateRoomRequest, RoomDto};
+use crate::dtos::{ CreateRoomRequest, RoomDto, AddMembersToRoomRequest };
 use crate::models::{CounterWrapper, CustomKey, MySqlDb, Room};
+
 use rocket::http;
 use rocket::State;
 use rocket_contrib::json::Json;
+
 use std::thread;
+use std::ops::Deref;
 
 #[post("/", data = "<request>")]
-// pubfn create(api_key: ApiKey, request: Json<CreateRoomRequest>) -> http::Status {
 pub fn create(api_key: ApiKey, request: Json<CreateRoomRequest>, conn: MySqlDb) -> http::Status {
     println!("create room request: {:?}", request);
     if let Some(reason) = validate_create_room_request(&request) {
@@ -27,6 +29,36 @@ pub fn create(api_key: ApiKey, request: Json<CreateRoomRequest>, conn: MySqlDb) 
     }
 }
 
+//TODO: there should be check that whoever is present or the creator of the room can only
+// add any other member here.
+#[post("/<id>/members", data = "<members_json>")]
+pub fn add_members(id: i32, api_key: ApiKey, members_json: Json<Vec<i32>>, conn: MySqlDb) -> Json<Result<bool, &'static str>>{
+    println!("members: {:?}", &members_json);
+    match validate_add_members_request(&members_json) {
+        Some(reason) => {
+            println!("validation error: {}", reason);
+            return Json(Err(reason));
+        },
+        None => {}
+    }
+    Json(room::add_members(id, &members_json, &conn))
+    // "adding member"
+}
+
+fn validate_add_members_request(member_ids: &[i32]) -> Option<&'static str> {
+    if member_ids.len() > 8 {
+        return Some("maximum 8 members allowed");
+    }
+    match member_ids.iter().find(|&id| *id < 1) {
+        Some(id) => {
+            // TODO: return appropriate status code.
+            return Some("member id cannot be less than 1");
+        },
+        _ => {}
+    }
+    None
+}
+
 fn validate_create_room_request(request: &CreateRoomRequest) -> Option<&'static str> {
     if request.creator_user_id < 1 {
         return Some("Invalid user id");
@@ -37,13 +69,14 @@ fn validate_create_room_request(request: &CreateRoomRequest) -> Option<&'static 
 #[get("/<id>")]
 // pub fn get<'a>(id: u32) -> RoomDto<'a> {
 pub fn get(
-    id: u32,
+    id: i32,
     custom_key: State<CustomKey>,
     counter_wrapper: State<CounterWrapper>,
     conn: MySqlDb,
-) -> RoomDto {
-    let room = Room::get_dummy();
-    let result = RoomDto::from_room_model(room);
+) -> Json<Option<RoomDto>> {
+    if id < 1 {
+        return Json(None);
+    }
     counter_wrapper.inner().increment();
     let curr_thread = thread::current();
     println!(
@@ -51,7 +84,15 @@ pub fn get(
         curr_thread.id(),
         curr_thread.name().unwrap_or("No Name"),
     );
-    result
+    match room::get_by_id(id, &conn) {
+        Ok(room_model) => {
+            return Json(Some(RoomDto::from_room_model(room_model)));
+        },
+        Err(reason) => {
+            println!("not found");
+            return Json(None);
+        }
+    }
 }
 
 #[get("/")]

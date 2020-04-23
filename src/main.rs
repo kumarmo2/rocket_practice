@@ -1,5 +1,8 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
+// TODO: remove after developement.
+#![allow(warnings)]
+
 #[macro_use]
 extern crate rocket_contrib;
 #[macro_use]
@@ -19,6 +22,7 @@ mod models;
 mod routes;
 mod schema;
 mod utils;
+mod dal;
 
 use routes::home;
 use routes::room;
@@ -36,7 +40,7 @@ fn main() {
                 user::create,
             ],
         )
-        .mount("/api/rooms", routes![room::create, room::get, room::get_all])
+        .mount("/api/rooms", routes![room::add_members,room::create, room::get, room::get_all ])
         .mount("/public", StaticFiles::from("./static"))
         .manage(models::CounterWrapper::default())
         .attach(AdHoc::on_attach("config_fairing", |rocket| {

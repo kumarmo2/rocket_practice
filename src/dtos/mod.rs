@@ -2,11 +2,13 @@ pub mod request_guards;
 
 use crate::models::Room;
 use crate::schema::users;
+use crate::schema::*;
 use rocket::request::Request;
 use rocket::response;
 use rocket::response::{Responder, Response};
 use serde::{Deserialize, Serialize};
 use std::io::Cursor;
+use diesel::{Insertable};
 
 // #[derive(Serialize, Deserialize)]
 // pub struct User {
@@ -41,6 +43,29 @@ pub struct RoomDto {
     pub id: i32,
     pub name: String,
     pub path: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct AddMembersToRoomRequest {
+    #[serde(rename = "memberIds")]
+    member_ids: Vec<i32>,
+}
+
+
+#[derive(Insertable)]
+#[table_name = "roomsubscribers"]
+pub struct RoomSubscriberInsertableDto {
+    pub member_id: i32,
+    pub room_id: i32,
+}
+
+impl RoomSubscriberInsertableDto {
+    pub fn new(member_id: i32, room_id: i32) -> Self {
+        RoomSubscriberInsertableDto {
+            member_id,
+            room_id,
+        }
+    }
 }
 
 // impl<'a> RoomDto<'a> {
