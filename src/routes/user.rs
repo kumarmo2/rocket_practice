@@ -1,5 +1,6 @@
 use crate::dtos::request_guards::ApiKey::ApiKey;
 use crate::dtos::CreateUserRequest;
+use crate::dal::{user};
 use crate::models;
 use crate::models::MySqlDb;
 use rocket::http::RawStr;
@@ -25,7 +26,7 @@ pub fn user_authorized_endpoint(apiKey: ApiKey, name: &RawStr) -> String {
 
 #[post("/", data = "<user_request>")]
 pub fn create(apiKey: ApiKey, user_request: Json<CreateUserRequest>, conn: MySqlDb) -> Json<()> {
-    match models::User::get_by_email(&user_request.email, &conn) {
+    match user::get_by_email(&user_request.email, &conn) {
         Some(user_model) => {
             println!("user found");
             return Json(());
@@ -34,7 +35,7 @@ pub fn create(apiKey: ApiKey, user_request: Json<CreateUserRequest>, conn: MySql
             println!("no user found by the email: {}", &user_request.email);
         }
     }
-    match models::User::create_from_request(&user_request, &conn) {
+    match user::create_from_request(&user_request, &conn) {
         Ok(_) => {
             println!("user created");
         }

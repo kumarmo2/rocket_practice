@@ -37,66 +37,66 @@ impl Default for User {
     // pb fn create_user(conn: create_request: CreateUserRequest)
 }
 
-impl User {
-    pub fn get_by_id(id: i32, conn: &MysqlConnection) -> Result<User, &'static str> {
-        use crate::schema::users::dsl::*;
-        // let results: Vec<User> = users.filter(id.eq(id)).load::<User>(conn);
-        let results: Result<Vec<User>, Error> = users.filter(id.eq(id)).load::<User>(conn);
-        match results {
-            Ok(mut list) => {
-                if list.len() < 1 {
-                    return Err("No user found");
-                } else {
-                    return Ok(list.remove(0));
-                }
-            }
-            Err(reason) => {
-                // Log the error
-                return Err("Error while fetching results");
-            }
-        }
-    }
+// impl User {
+//     pub fn get_by_id(id: i32, conn: &MysqlConnection) -> Result<User, &'static str> {
+//         use crate::schema::users::dsl::*;
+//         // let results: Vec<User> = users.filter(id.eq(id)).load::<User>(conn);
+//         let results: Result<Vec<User>, Error> = users.filter(id.eq(id)).load::<User>(conn);
+//         match results {
+//             Ok(mut list) => {
+//                 if list.len() < 1 {
+//                     return Err("No user found");
+//                 } else {
+//                     return Ok(list.remove(0));
+//                 }
+//             }
+//             Err(reason) => {
+//                 // Log the error
+//                 return Err("Error while fetching results");
+//             }
+//         }
+//     }
 
-    pub fn create_from_request(
-        create_request: &CreateUserRequest,
-        conn: &MysqlConnection,
-    ) -> Result<(), &'static str> {
-        let result = diesel::insert_into(users::table)
-            .values(create_request)
-            .execute(conn);
+//     pub fn create_from_request(
+//         create_request: &CreateUserRequest,
+//         conn: &MysqlConnection,
+//     ) -> Result<(), &'static str> {
+//         let result = diesel::insert_into(users::table)
+//             .values(create_request)
+//             .execute(conn);
 
-        match result {
-            Ok(_) => {
-                return Ok(());
-            }
-            Err(reason) => {
-                // log the error.
-                return Err("could not create the user");
-            }
-        }
-    }
+//         match result {
+//             Ok(_) => {
+//                 return Ok(());
+//             }
+//             Err(reason) => {
+//                 // log the error.
+//                 return Err("could not create the user");
+//             }
+//         }
+//     }
 
-    pub fn get_by_email(email_from_request: &str, conn: &MysqlConnection) -> Option<User> {
-        use crate::schema::users::dsl::*;
-        let results = users
-            .filter(email.eq(email_from_request))
-            .limit(1)
-            .load::<User>(conn);
-        match results {
-            Ok(mut list) => {
-                if list.len() < 1 {
-                    return None;
-                } else {
-                    return Some(list.remove(0));
-                }
-            }
-            Err(reason) => {
-                // log the error
-                return None;
-            }
-        }
-    }
-}
+//     pub fn get_by_email(email_from_request: &str, conn: &MysqlConnection) -> Option<User> {
+//         use crate::schema::users::dsl::*;
+//         let results = users
+//             .filter(email.eq(email_from_request))
+//             .limit(1)
+//             .load::<User>(conn);
+//         match results {
+//             Ok(mut list) => {
+//                 if list.len() < 1 {
+//                     return None;
+//                 } else {
+//                     return Some(list.remove(0));
+//                 }
+//             }
+//             Err(reason) => {
+//                 // log the error
+//                 return None;
+//             }
+//         }
+//     }
+// }
 
 // TODO: think if we can not export every field as public
 #[derive(Queryable, QueryableByName, Debug)]
@@ -137,8 +137,8 @@ impl<'r> Responder<'r> for Room {
 
 // TODO: need to figure out how to have field names different than the db column names.
 // #[derive(Debug, Queryable, Insertable)]
-#[derive(Debug, Queryable )]
-// #[table_name = "roomsubscribers"]
+#[derive(Queryable, QueryableByName, Debug)]
+#[table_name = "roomsubscribers"]
 pub struct RoomSubscriber {
     // pub id: i32,
     pub member_id: i32,

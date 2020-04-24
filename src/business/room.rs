@@ -3,21 +3,21 @@ use crate::dtos::{CreateRoomRequest,RoomSubscriberInsertableDto} ;
 use crate::models::{Room, User, RoomSubscriber};
 use diesel::MysqlConnection;
 use crate::dal::room::{create_from_request};
-use crate::dal::room;
+use crate::dal::{room, user as user_dal};
 use crate::dal::room_subscribers;
 
 pub fn create(
     create_request: CreateRoomRequest,
     conn: &MysqlConnection,
 ) -> Result<(), &'static str> {
-    match User::get_by_id(create_request.creator_user_id, conn) {
+    match get_by_id(create_request.creator_user_id, conn) {
 
         Ok(_) => {}
         Err(reason) => {
             return Err(reason);
         }
     }
-    return create_from_request(create_request, conn);
+    return room::create_from_request(create_request, conn);
 }
 
 pub fn get_by_id(id: i32, conn: &MysqlConnection) -> Result<Room, &'static str> {

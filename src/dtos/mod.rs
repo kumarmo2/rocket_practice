@@ -68,14 +68,15 @@ impl RoomSubscriberInsertableDto {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct MessageInsertableDto {
+#[derive(Debug, Serialize, Deserialize, Insertable)]
+#[table_name = "messages"]
+pub struct MessageCreateRequest {
     pub room_id: i32,
     pub sender_id: i32,
     pub content: String,
 }
 
-impl MessageInsertableDto {
+impl MessageCreateRequest {
     pub fn new(room_id: i32, sender_id: i32, content: String) -> Self {
         Self {
             room_id,
