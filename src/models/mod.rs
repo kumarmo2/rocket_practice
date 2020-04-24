@@ -155,6 +155,15 @@ impl RoomSubscriber {
     }
 }
 
+#[derive(Debug, Queryable, QueryableByName)]
+#[table_name = "messages"]
+pub struct Message {
+    pub id: i32,
+    pub room_id: i32,
+    pub sender_id: i32,
+    pub content: String,
+}
+
 pub struct CounterWrapper {
     counter: Arc<Mutex<u32>>,
 }

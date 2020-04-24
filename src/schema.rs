@@ -3,7 +3,7 @@ table! {
         id -> Integer,
         room_id -> Integer,
         sender_id -> Integer,
-        message -> Text,
+        content -> Text,
     }
 }
 

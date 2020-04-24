@@ -68,6 +68,23 @@ impl RoomSubscriberInsertableDto {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct MessageInsertableDto {
+    pub room_id: i32,
+    pub sender_id: i32,
+    pub content: String,
+}
+
+impl MessageInsertableDto {
+    pub fn new(room_id: i32, sender_id: i32, content: String) -> Self {
+        Self {
+            room_id,
+            sender_id,
+            content,
+        }
+    }
+}
+
 // impl<'a> RoomDto<'a> {
 impl RoomDto {
     // pub fn from_room_model(model: &Room) -> RoomDto {
