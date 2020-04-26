@@ -12,6 +12,7 @@ extern crate diesel;
 extern crate rocket;
 use rocket::fairing::AdHoc;
 use rocket_contrib::serve::StaticFiles;
+use tokio::runtime;
 
 // mod routes::home;
 
@@ -23,20 +24,21 @@ mod routes;
 mod schema;
 mod utils;
 mod dal;
+mod states;
 
 use routes::home;
 use routes::room;
 use routes::user;
 use routes::message;
+use states::runtime::RuntimeWrapper;
 
 fn main() {
     rocket::ignite()
-        .mount("/", routes![routes::home::index,])
+        .mount("/", routes![routes::home::index, routes::home::dummy])
         .mount(
             "/api/users",
             routes![
                 user::big_hello,
-                // user::get_user_by_id,
                 user::user_authorized_endpoint,
                 user::create,
             ],
@@ -45,6 +47,7 @@ fn main() {
         .mount("/api/messages", routes![message::create])
         .mount("/public", StaticFiles::from("./static"))
         .manage(models::CounterWrapper::default())
+        .manage(RuntimeWrapper::new())
         .attach(AdHoc::on_attach("config_fairing", |rocket| {
             let val = rocket
                 .config()
