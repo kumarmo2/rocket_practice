@@ -12,6 +12,8 @@ extern crate rocket;
 use rocket::fairing::AdHoc;
 use rocket_contrib::serve::StaticFiles;
 
+use manager::RabbitMqManager;
+
 // mod routes::home;
 
 mod business;
@@ -46,6 +48,10 @@ fn main() {
         .mount("/api/messages", routes![message::create])
         .mount("/public", StaticFiles::from("./static"))
         .manage(models::CounterWrapper::default())
+        // TODO: read from the config.
+        .manage(RabbitMqManager::new(
+            "amqp://guest:guest@127.0.0.1:5672/%2f",
+        ))
         .attach(AdHoc::on_attach("config_fairing", |rocket| {
             let val = rocket
                 .config()
