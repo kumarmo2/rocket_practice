@@ -1,5 +1,5 @@
 -- Your SQL goes here
-create table RoomSubscribers (
+create table roomsubscribers (
 	-- id int auto_increment,
     member_id int not null,
     room_id int not null,

@@ -1,6 +1,6 @@
 -- Your SQL goes here
 
-create table Rooms (
+create table rooms (
     id int primary key auto_increment,
     name varchar(20) not null,
     creator_user_id int not null,
