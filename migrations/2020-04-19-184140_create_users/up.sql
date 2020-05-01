@@ -1,5 +1,5 @@
 -- Your SQL goes here
-create table Users(
+create table users(
  id int auto_increment,
  name varchar(100) not null,
  age int not null,

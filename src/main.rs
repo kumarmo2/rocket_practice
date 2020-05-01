@@ -1,5 +1,4 @@
 #![feature(proc_macro_hygiene, decl_macro)]
-
 // TODO: remove after developement.
 #![allow(warnings)]
 
@@ -12,25 +11,22 @@ extern crate diesel;
 extern crate rocket;
 use rocket::fairing::AdHoc;
 use rocket_contrib::serve::StaticFiles;
-use tokio::runtime;
 
 // mod routes::home;
 
 mod business;
+mod dal;
 mod dtos;
 mod error_catchers;
 mod models;
 mod routes;
 mod schema;
 mod utils;
-mod dal;
-mod states;
 
 use routes::home;
+use routes::message;
 use routes::room;
 use routes::user;
-use routes::message;
-use states::runtime::RuntimeWrapper;
 
 fn main() {
     rocket::ignite()
@@ -43,11 +39,13 @@ fn main() {
                 user::create,
             ],
         )
-        .mount("/api/rooms", routes![room::add_members,room::create, room::get, room::get_all ])
+        .mount(
+            "/api/rooms",
+            routes![room::add_members, room::create, room::get, room::get_all],
+        )
         .mount("/api/messages", routes![message::create])
         .mount("/public", StaticFiles::from("./static"))
         .manage(models::CounterWrapper::default())
-        .manage(RuntimeWrapper::new())
         .attach(AdHoc::on_attach("config_fairing", |rocket| {
             let val = rocket
                 .config()
