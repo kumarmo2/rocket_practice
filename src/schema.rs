@@ -8,6 +8,14 @@ table! {
 }
 
 table! {
+    queues (id) {
+        id -> Integer,
+        user_id -> Integer,
+        queue_name -> Varchar,
+    }
+}
+
+table! {
     rooms (id) {
         id -> Integer,
         name -> Varchar,
@@ -35,12 +43,14 @@ table! {
 
 joinable!(messages -> rooms (room_id));
 joinable!(messages -> users (sender_id));
+joinable!(queues -> users (user_id));
 joinable!(rooms -> users (creator_user_id));
 joinable!(roomsubscribers -> rooms (room_id));
 joinable!(roomsubscribers -> users (member_id));
 
 allow_tables_to_appear_in_same_query!(
     messages,
+    queues,
     rooms,
     roomsubscribers,
     users,
