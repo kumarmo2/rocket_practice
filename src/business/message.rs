@@ -51,5 +51,6 @@ fn send_message_event(
         user_id,
         event_type: MessageEventType::Send,
     };
-    rabbit.publish_message_to_queue_sync("hello", &event);
+
+    rabbit.publish_message_to_queue_sync("messages", &event);
 }

@@ -1,6 +1,6 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 // TODO: remove after developement.
-#![allow(warnings)]
+// #![allow(warnings)]
 
 #[macro_use]
 extern crate rocket_contrib;
@@ -10,6 +10,7 @@ extern crate diesel;
 #[macro_use]
 extern crate rocket;
 use rocket::fairing::AdHoc;
+use rocket::http::Header;
 use rocket_contrib::serve::StaticFiles;
 
 use manager::RabbitMqManager;
@@ -39,6 +40,8 @@ fn main() {
                 user::big_hello,
                 user::user_authorized_endpoint,
                 user::create,
+                user::register_user_event_queue,
+                user::cors_for_register_events_endpoint
             ],
         )
         .mount(
@@ -62,6 +65,10 @@ fn main() {
             Ok(rocket.manage(models::CustomKey(val)))
         }))
         .attach(models::MySqlDb::fairing())
+        .attach(AdHoc::on_response("cors_respone", |_, res| {
+            // TODO: only set CORS headers for selected endpoints and not for all
+            res.set_header(Header::new("Access-Control-Allow-Origin", "*"));
+        }))
         .register(catchers![error_catchers::bad_request])
         .launch();
 }

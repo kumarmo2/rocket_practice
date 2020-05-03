@@ -1,4 +1,5 @@
 pub mod request_guards;
+pub mod responders;
 
 use crate::models::Room;
 use crate::schema::users;

@@ -170,8 +170,8 @@ checksum = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
 
 [[package]]
 name = "chat_common_types"
-version = "0.1.0"
-source = "git+https://github.com/kumarmo2/chat_common_types.git#ee4995b1e6d189636a02bc3fa4d82626f3a12911"
+version = "0.2.0"
+source = "git+https://github.com/kumarmo2/chat_common_types.git#c9f064d22cec532f813b9169f09c27f7b990206d"
 dependencies = [
  "serde",
 ]
@@ -727,8 +727,8 @@ dependencies = [
 
 [[package]]
 name = "manager"
-version = "0.1.5"
-source = "git+https://github.com/kumarmo2/rabbitmq_manager.git#ed770da3b3572acf13883b20562e8b46e7fffde1"
+version = "0.1.13"
+source = "git+https://github.com/kumarmo2/rabbitmq_manager.git#8c584590a2d018437bd7fbd53c4c8b0df482d0cc"
 dependencies = [
  "lapin",
  "r2d2",
@@ -1351,6 +1351,7 @@ dependencies = [
  "rocket",
  "rocket_contrib",
  "serde",
+ "smol",
  "uuid",
 ]
 

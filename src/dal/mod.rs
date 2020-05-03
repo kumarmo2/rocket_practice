@@ -1,4 +1,5 @@
 pub mod message;
+pub mod queue;
 pub mod room;
 pub mod room_subscribers;
 pub mod user;
