@@ -2,7 +2,7 @@ Client queues are the queues which are connected to websocket clients for
 real time events/notifications.
 
 #### Rules
- * TTL on queue leve.
+ * TTL on queue level.
  * Max limit on messages per queue.
  * Non Durable i.e will not survive broker restart.
  * Non Exclusive.

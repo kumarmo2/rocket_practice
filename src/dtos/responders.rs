@@ -10,10 +10,9 @@ impl<'r> Responder<'r> for CorsResponder {
         let mut builder = ResponseBuilder::new(Response::new());
         builder.status(Status::NoContent);
         builder.raw_header("Access-Control-Allow-Origin", "*");
-        builder.raw_header("Access-Control-Allow-Methods", "POST, OPTIONS");
+        builder.raw_header("Access-Control-Allow-Methods", "POST");
         // TODO: restrict the headers.
         builder.raw_header("Access-Control-Allow-Headers", "*");
-        let response = builder.finalize();
-        Ok(response)
+        Ok(builder.finalize())
     }
 }

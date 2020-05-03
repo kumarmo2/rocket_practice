@@ -1,6 +1,6 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 // TODO: remove after developement.
-#![allow(warnings)]
+// #![allow(warnings)]
 
 #[macro_use]
 extern crate rocket_contrib;
@@ -65,7 +65,7 @@ fn main() {
             Ok(rocket.manage(models::CustomKey(val)))
         }))
         .attach(models::MySqlDb::fairing())
-        .attach(AdHoc::on_response("cors_respone", |req, res| {
+        .attach(AdHoc::on_response("cors_respone", |_, res| {
             // TODO: only set CORS headers for selected endpoints and not for all
             res.set_header(Header::new("Access-Control-Allow-Origin", "*"));
         }))
