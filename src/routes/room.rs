@@ -134,3 +134,23 @@ pub fn get_room_info(_api_key: ApiKey, conn: MySqlDb, id: i32) -> Result<Json<Ro
         _ => Err(Status::new(500, "Unknown error")),
     }
 }
+
+#[get("/<id>/members")]
+pub fn get_room_member_ids(
+    _api_key: ApiKey,
+    id: i32,
+    conn: MySqlDb,
+) -> Result<Json<Vec<i32>>, Status> {
+    if id < 1 {
+        return Err(Status::new(400, "Invalid room id"));
+    }
+    match room::get_room_members(id, &conn) {
+        Some(members) => Ok(Json(
+            members
+                .iter()
+                .map(|room_subs| room_subs.member_id)
+                .collect(),
+        )),
+        _ => Err(Status::new(500, "Something went wrong")),
+    }
+}

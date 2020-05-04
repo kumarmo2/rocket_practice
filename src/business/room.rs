@@ -54,6 +54,10 @@ pub fn add_members(
     }
 }
 
+pub fn get_room_members(id: i32, conn: &MysqlConnection) -> Option<Vec<RoomSubscriber>> {
+    room_subscribers::get_members(id, conn)
+}
+
 pub fn get_room_info(id: i32, conn: &MysqlConnection) -> Option<RoomInfo> {
     let room: Room;
     match get_by_id(id, conn) {
@@ -66,7 +70,7 @@ pub fn get_room_info(id: i32, conn: &MysqlConnection) -> Option<RoomInfo> {
         }
     }
     let subs: Vec<_>;
-    match room_subscribers::get_members(id, conn) {
+    match get_room_members(id, conn) {
         Some(list) => {
             subs = list;
         }
