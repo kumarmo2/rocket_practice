@@ -26,7 +26,6 @@ mod routes;
 mod schema;
 mod utils;
 
-use routes::home;
 use routes::message;
 use routes::room;
 use routes::user;
@@ -37,8 +36,7 @@ fn main() {
         .mount(
             "/api/users",
             routes![
-                user::big_hello,
-                user::user_authorized_endpoint,
+                user::get,
                 user::create,
                 user::register_user_event_queue,
                 user::cors_for_register_events_endpoint
@@ -46,7 +44,13 @@ fn main() {
         )
         .mount(
             "/api/rooms",
-            routes![room::add_members, room::create, room::get, room::get_all],
+            routes![
+                room::add_members,
+                room::create,
+                room::get,
+                room::get_all,
+                room::get_room_info
+            ],
         )
         .mount("/api/messages", routes![message::create])
         .mount("/public", StaticFiles::from("./static"))

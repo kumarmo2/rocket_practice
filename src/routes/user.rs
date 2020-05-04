@@ -2,37 +2,35 @@ use crate::business::user as user_bl;
 use crate::dal::user;
 use crate::dtos::request_guards::ApiKey::ApiKey;
 use crate::dtos::responders::CorsResponder;
-use crate::dtos::CreateUserRequest;
-use crate::models;
+use crate::dtos::{CreateUserRequest, UserDto};
 use crate::models::MySqlDb;
 use chat_common_types::events::ClientEventQueueNameWrapper;
 use manager::RabbitMqManager;
-use rocket::http::{RawStr, Status};
+use rocket::http::Status;
 use rocket::State;
 use rocket_contrib::json::Json;
 
-#[get("/<name>/<age>/<cool>")]
-pub fn big_hello(name: &RawStr, age: u32, cool: bool) -> String {
-    if cool {
-        format!("User: {}, of age: {} is cool", name, age)
-    } else {
-        format!("User: {}, of age: {} is not cool", name, age)
+#[get("/<id>")]
+pub fn get(_api_key: ApiKey, id: i32, conn: MySqlDb) -> Result<Json<UserDto>, Status> {
+    if id < 1 {
+        return Err(Status::new(400, "invalid user id"));
+    }
+    match user_bl::get_user_by_id(id, &conn) {
+        Ok(user) => {
+            println!("user: {:?}", user);
+            Ok(Json(UserDto::from_user_model(user)))
+        }
+        Err(reason) => {
+            println!("user not found: {}", reason);
+            Err(Status::new(404, reason))
+        }
     }
 }
 
-#[get("/<name>")]
-pub fn user_authorized_endpoint(apiKey: ApiKey, name: &RawStr) -> String {
-    format!(
-        "user with name: {} and apiKey: {}",
-        name.to_string(),
-        apiKey.0
-    )
-}
-
 #[post("/", data = "<user_request>")]
-pub fn create(apiKey: ApiKey, user_request: Json<CreateUserRequest>, conn: MySqlDb) -> Json<()> {
+pub fn create(_api_key: ApiKey, user_request: Json<CreateUserRequest>, conn: MySqlDb) -> Json<()> {
     match user::get_by_email(&user_request.email, &conn) {
-        Some(user_model) => {
+        Some(_) => {
             println!("user found");
             return Json(());
         }
@@ -58,7 +56,7 @@ pub fn cors_for_register_events_endpoint(id: i32) -> CorsResponder {
 
 #[post("/<id>/events/register")]
 pub fn register_user_event_queue(
-    api_key: ApiKey,
+    _api_key: ApiKey,
     id: i32,
     conn: MySqlDb,
     rabbit: State<RabbitMqManager>,

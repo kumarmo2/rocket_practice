@@ -16,7 +16,7 @@ use rocket_contrib::databases::diesel;
 use std::io::Cursor;
 use std::sync::{Arc, Mutex};
 
-#[derive(Queryable)]
+#[derive(Queryable, Debug)]
 pub struct User {
     pub id: i32,
     pub name: String,
@@ -78,16 +78,6 @@ pub struct RoomSubscriber {
     // pub id: i32,
     pub member_id: i32,
     pub room_id: i32,
-}
-
-impl RoomSubscriber {
-    pub fn new(member_id: i32, room_id: i32) -> Self {
-        RoomSubscriber {
-            // id,
-            member_id,
-            room_id,
-        }
-    }
 }
 
 #[derive(Debug, Queryable, QueryableByName)]

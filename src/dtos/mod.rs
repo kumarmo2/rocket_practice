@@ -1,7 +1,7 @@
 pub mod request_guards;
 pub mod responders;
 
-use crate::models::Room;
+use crate::models::{self, Room};
 use crate::schema::users;
 use crate::schema::*;
 use diesel::Insertable;
@@ -11,12 +11,11 @@ use rocket::response::{Responder, Response};
 use serde::{Deserialize, Serialize};
 use std::io::Cursor;
 
-// #[derive(Serialize, Deserialize)]
-// pub struct User {
-//     pub id: u32,
-//     pub name: String,
-//     pub age: u32,
-// }
+#[derive(Debug)]
+pub enum AuthoizationError {
+    Missing,
+    UnAuthorized,
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CreateRoomRequest {
@@ -26,12 +25,10 @@ pub struct CreateRoomRequest {
     pub room_name: Option<String>,
     #[serde(rename = "isPublic")]
     pub is_public: Option<bool>,
-    // pub members: Option<Vec<u32>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Insertable)]
 #[table_name = "users"]
-// #[derive(Serialize, Deserialize, Debug)]
 pub struct CreateUserRequest {
     pub name: String,
     pub age: i32,
@@ -39,7 +36,6 @@ pub struct CreateUserRequest {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-// pub struct RoomDto<'a> {
 pub struct RoomDto {
     pub id: i32,
     pub name: String,
@@ -83,6 +79,29 @@ impl MessageCreateRequest {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UserDto {
+    pub id: i32,
+    pub name: String,
+    pub age: i32,
+    pub email: String,
+}
+
+impl UserDto {
+    // I decided to took the ownership of User Model, because creation
+    // of dto from the model should be the last step i.e After we have created the dto,
+    // there should not be any more fiddling with the model. This is atleast what I believe
+    // right now. If in future, I turn out to be wrong, will take a reference of the model instead.
+    pub fn from_user_model(user: models::User) -> Self {
+        UserDto {
+            id: user.id,
+            name: user.name,
+            age: user.age,
+            email: user.email,
+        }
+    }
+}
+
 // impl<'a> RoomDto<'a> {
 impl RoomDto {
     // pub fn from_room_model(model: &Room) -> RoomDto {
@@ -107,7 +126,7 @@ impl RoomDto {
 
 // impl<'r> Responder<'r> for RoomDto<'_> {
 impl<'r> Responder<'r> for RoomDto {
-    fn respond_to(self, request: &Request) -> response::Result<'r> {
+    fn respond_to(self, _: &Request) -> response::Result<'r> {
         Response::build()
             .sized_body(Cursor::new(format!(
                 "Room's name: {}, id: {}, path: {}",

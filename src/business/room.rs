@@ -1,9 +1,8 @@
-use crate::business::user;
-use crate::dal::room::create_from_request;
 use crate::dal::room_subscribers;
 use crate::dal::{room, user as user_dal};
 use crate::dtos::{CreateRoomRequest, RoomSubscriberInsertableDto};
-use crate::models::{Room, RoomSubscriber, User};
+use crate::models::{Room, RoomSubscriber};
+use chat_common_types::dtos::RoomInfo;
 use diesel::MysqlConnection;
 
 pub fn create(
@@ -36,7 +35,7 @@ pub fn add_members(
     match room::get_by_id(id, conn) {
         Ok(_) => {}
         Err(reason) => {
-            println!("could not find the room");
+            println!("could not find the room: {}", reason);
             return Err("could not find the room");
         }
     }
@@ -53,4 +52,37 @@ pub fn add_members(
             return Ok(false);
         }
     }
+}
+
+pub fn get_room_info(id: i32, conn: &MysqlConnection) -> Option<RoomInfo> {
+    let room: Room;
+    match get_by_id(id, conn) {
+        Ok(room_model) => {
+            room = room_model;
+        }
+        Err(reason) => {
+            println!("no room fetched: {}", reason);
+            return None;
+        }
+    }
+    let subs: Vec<_>;
+    match room_subscribers::get_members(id, conn) {
+        Some(list) => {
+            subs = list;
+        }
+        _ => {
+            return None;
+        }
+    }
+    let member_ids: Vec<i32> = subs
+        .iter()
+        .map(|member: &RoomSubscriber| member.member_id)
+        .collect();
+
+    Some(RoomInfo {
+        id: room.id,
+        name: room.name,
+        path: room.url_identifier,
+        member_ids,
+    })
 }
