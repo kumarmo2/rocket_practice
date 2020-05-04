@@ -19,6 +19,7 @@ pub fn get_by_id(id_input: i32, conn: &MysqlConnection) -> Result<User, &'static
         }
         Err(reason) => {
             // Log the error
+            println!("could not fetch user, reason: {}", reason);
             return Err("Error while fetching results");
         }
     }
@@ -58,7 +59,7 @@ pub fn get_by_email(email_from_request: &str, conn: &MysqlConnection) -> Option<
             }
         }
         Err(reason) => {
-            // log the error
+            println!("could not fetch user, reason: {}", reason);
             return None;
         }
     }

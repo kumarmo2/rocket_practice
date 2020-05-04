@@ -1,18 +1,18 @@
 use crate::business::room;
-use crate::dtos::request_guards::ApiKey::ApiKey;
+use crate::dtos::request_guards::{AdminAuthorization, ApiKey::ApiKey};
 use crate::dtos::{CreateRoomRequest, RoomDto};
-use crate::models::{CounterWrapper, CustomKey, MySqlDb};
+use crate::models::{self, CounterWrapper, CustomKey, MySqlDb};
 
 use rocket::http::{self, Status};
 use rocket::State;
 use rocket_contrib::json::Json;
 
-use chat_common_types::dtos::RoomInfo;
+use chat_common_types::dtos::{self as common_dtos, RoomInfo};
 
 use std::thread;
 
 #[post("/", data = "<request>")]
-pub fn create(api_key: ApiKey, request: Json<CreateRoomRequest>, conn: MySqlDb) -> http::Status {
+pub fn create(_api_key: ApiKey, request: Json<CreateRoomRequest>, conn: MySqlDb) -> http::Status {
     println!("create room request: {:?}", request);
     if let Some(reason) = validate_create_room_request(&request) {
         println!("bad request");
@@ -76,7 +76,7 @@ fn validate_create_room_request(request: &CreateRoomRequest) -> Option<&'static 
 // pub fn get<'a>(id: u32) -> RoomDto<'a> {
 pub fn get(
     id: i32,
-    custom_key: State<CustomKey>,
+    _custom_key: State<CustomKey>,
     counter_wrapper: State<CounterWrapper>,
     conn: MySqlDb,
 ) -> Json<Option<RoomDto>> {
@@ -135,6 +135,8 @@ pub fn get_room_info(_api_key: ApiKey, conn: MySqlDb, id: i32) -> Result<Json<Ro
     }
 }
 
+// TODO: Currently this endpoint is a waste. That is what happens when you
+// code without thinking. You wasted your time. Let this be a lesson.
 #[get("/<id>/members")]
 pub fn get_room_member_ids(
     _api_key: ApiKey,
@@ -153,4 +155,30 @@ pub fn get_room_member_ids(
         )),
         _ => Err(Status::new(500, "Something went wrong")),
     }
+}
+
+#[get("/<id>/members/queues")]
+pub fn get_room_client_queues(
+    id: i32,
+    _admin: AdminAuthorization,
+    conn: MySqlDb,
+) -> Result<Json<Vec<common_dtos::Queue>>, Status> {
+    if id < 1 {
+        return Err(Status::new(400, "Invalid room  id"));
+    }
+    let queues: Vec<models::Queue>;
+    match room::get_room_members_client_queues(id, &conn) {
+        Some(list) => {
+            queues = list;
+        }
+        None => return Err(Status::new(500, "something went wrong")),
+    }
+    let result: Vec<common_dtos::Queue> = queues
+        .into_iter()
+        .map(|q: models::Queue| common_dtos::Queue {
+            user_id: q.user_id,
+            queue_name: q.queue_name,
+        })
+        .collect();
+    Ok(Json(result))
 }

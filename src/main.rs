@@ -51,6 +51,7 @@ fn main() {
                 room::get_all,
                 room::get_room_info,
                 room::get_room_member_ids,
+                room::get_room_client_queues,
             ],
         )
         .mount("/api/messages", routes![message::create])

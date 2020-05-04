@@ -1,7 +1,3 @@
-use rocket::State;
-
-use std::sync::{Arc, Mutex};
-
 #[get("/")]
 pub fn index() -> &'static str {
     "Hello, world!"

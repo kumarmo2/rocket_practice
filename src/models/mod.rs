@@ -1,14 +1,8 @@
 pub mod user;
 
-use crate::dtos::{CreateRoomRequest, CreateUserRequest};
 // use crate::dtos::CreateUserRequest;
 use crate::schema::*;
-use crate::utils;
-use diesel::mysql::MysqlConnection;
-use diesel::prelude::*;
-use diesel::result::Error;
-use diesel::{Insertable, Queryable, QueryableByName};
-use rocket::http::Status;
+use diesel::{Queryable, QueryableByName};
 use rocket::request::Request;
 use rocket::response;
 use rocket::response::{Responder, Response};
@@ -89,7 +83,8 @@ pub struct Message {
     pub content: String,
 }
 
-#[derive(Debug, Queryable)]
+#[derive(Debug, Queryable, QueryableByName)]
+#[table_name = "queues"]
 pub struct Queue {
     pub id: i32,
     pub user_id: i32,

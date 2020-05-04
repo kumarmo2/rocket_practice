@@ -1,7 +1,7 @@
 use crate::dal::room_subscribers;
-use crate::dal::{room, user as user_dal};
+use crate::dal::{queue, room, user as user_dal};
 use crate::dtos::{CreateRoomRequest, RoomSubscriberInsertableDto};
-use crate::models::{Room, RoomSubscriber};
+use crate::models::{self, Room, RoomSubscriber};
 use chat_common_types::dtos::RoomInfo;
 use diesel::MysqlConnection;
 
@@ -31,7 +31,6 @@ pub fn add_members(
     member_ids: &[i32],
     conn: &MysqlConnection,
 ) -> Result<bool, &'static str> {
-    println!("sdfsdfdf");
     match room::get_by_id(id, conn) {
         Ok(_) => {}
         Err(reason) => {
@@ -89,4 +88,21 @@ pub fn get_room_info(id: i32, conn: &MysqlConnection) -> Option<RoomInfo> {
         path: room.url_identifier,
         member_ids,
     })
+}
+
+pub fn get_room_members_client_queues(
+    id: i32,
+    conn: &MysqlConnection,
+) -> Option<Vec<models::Queue>> {
+    let members: Vec<models::RoomSubscriber>;
+    match get_room_members(id, conn) {
+        Some(m) => {
+            members = m;
+        }
+        None => {
+            return None;
+        }
+    }
+    let member_ids: Vec<i32> = members.iter().map(|member| member.member_id).collect();
+    queue::get_queues_from_user_ids(member_ids.as_ref(), conn)
 }
