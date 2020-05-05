@@ -1,5 +1,6 @@
 use crate::dal::{message, room_subscribers};
 use crate::dtos::MessageCreateRequest;
+use crate::models::Message;
 use chat_common_types::events::{MessageEvent, MessageEventType};
 use diesel::MysqlConnection;
 use manager::RabbitMqManager;
@@ -55,4 +56,8 @@ fn send_message_event(
     };
 
     rabbit.publish_message_to_queue_sync("messages", &event);
+}
+
+pub fn get_by_id(id: i32, conn: &MysqlConnection) -> Option<Message> {
+    message::get(id, conn)
 }
