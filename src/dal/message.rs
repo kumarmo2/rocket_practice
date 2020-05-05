@@ -1,11 +1,8 @@
 use crate::dal::last_insert_id;
 use crate::dtos::MessageCreateRequest;
-use crate::models::Message;
-use crate::schema::*;
 use diesel::dsl::select;
 use diesel::insert_into;
 use diesel::prelude::*;
-use diesel::sql_types::{Integer, Text};
 use diesel::MysqlConnection;
 
 // TODO: remove dependency of diesel.

@@ -9,11 +9,9 @@ use rocket_contrib::json::Json;
 
 use manager::RabbitMqManager;
 
-use diesel::result::Error;
-
 #[post("/", data = "<request_json>")]
 pub fn create(
-    api_key: ApiKey,
+    _api_key: ApiKey,
     rabbit: State<RabbitMqManager>,
     request_json: Json<MessageCreateRequest>,
     conn: MySqlDb,
@@ -38,7 +36,7 @@ fn validate_create_message_request(request: &MessageCreateRequest) -> Option<&'s
         Some("content cannot be empty")
     } else if request.room_id < 1 {
         Some("invalid room id")
-    } else if (request.sender_id < 1) {
+    } else if request.sender_id < 1 {
         Some("invalid sender id")
     } else {
         None

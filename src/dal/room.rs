@@ -1,20 +1,15 @@
+use crate::dtos::CreateRoomRequest;
 use crate::models::Room;
 use crate::utils;
-use crate::dtos::{CreateRoomRequest};
 use diesel::mysql::MysqlConnection;
-use crate::schema::*;
-use diesel::{insert_into};
 use diesel::prelude::*;
 use diesel::sql_types::Integer;
 
 pub fn get_all(conn: &diesel::MysqlConnection) -> Result<Vec<Room>, &'static str> {
     use crate::schema::rooms::dsl::*;
-    let results = rooms
-                    .load::<Room>(conn);
+    let results = rooms.load::<Room>(conn);
     match results {
-        Ok(list) => {
-            Ok(list)
-        },
+        Ok(list) => Ok(list),
         Err(reason) => {
             println!("failed: {}", reason);
             return Err("some problems");
@@ -52,12 +47,12 @@ pub fn create_from_request(
 pub fn get_by_id(id: i32, conn: &MysqlConnection) -> Result<Room, &'static str> {
     let query = "select * from rooms where id = ? limit 1";
     let result = diesel::sql_query(query)
-                    .bind::<Integer, _>(id)
-                    .get_result::<Room>(conn);
+        .bind::<Integer, _>(id)
+        .get_result::<Room>(conn);
     match result {
         Ok(r) => {
             return Ok(r);
-        },
+        }
         Err(reason) => {
             println!("reason: {}", reason);
             return Err("some error");

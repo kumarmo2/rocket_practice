@@ -1,4 +1,4 @@
-use base64::{decode, encode};
+use base64::encode;
 use uuid::Uuid;
 
 pub fn generate_v4_base64_uuid() -> String {

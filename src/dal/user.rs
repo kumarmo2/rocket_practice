@@ -1,17 +1,14 @@
-
-use crate::models::User;
 use crate::dtos::CreateUserRequest;
-use diesel::mysql::MysqlConnection;
+use crate::models::User;
 use crate::schema::*;
-use diesel::{insert_into};
+use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 use diesel::result::Error;
 
-
-pub fn get_by_id(id: i32, conn: &MysqlConnection) -> Result<User, &'static str> {
+pub fn get_by_id(id_input: i32, conn: &MysqlConnection) -> Result<User, &'static str> {
     use crate::schema::users::dsl::*;
     // let results: Vec<User> = users.filter(id.eq(id)).load::<User>(conn);
-    let results: Result<Vec<User>, Error> = users.filter(id.eq(id)).load::<User>(conn);
+    let results: Result<Vec<User>, Error> = users.filter(id.eq(id_input)).load::<User>(conn);
     match results {
         Ok(mut list) => {
             if list.len() < 1 {
@@ -22,6 +19,7 @@ pub fn get_by_id(id: i32, conn: &MysqlConnection) -> Result<User, &'static str> 
         }
         Err(reason) => {
             // Log the error
+            println!("could not fetch user, reason: {}", reason);
             return Err("Error while fetching results");
         }
     }
@@ -39,7 +37,7 @@ pub fn create_from_request(
         Ok(_) => {
             return Ok(());
         }
-        Err(reason) => {
+        Err(_) => {
             // log the error.
             return Err("could not create the user");
         }
@@ -61,7 +59,7 @@ pub fn get_by_email(email_from_request: &str, conn: &MysqlConnection) -> Option<
             }
         }
         Err(reason) => {
-            // log the error
+            println!("could not fetch user, reason: {}", reason);
             return None;
         }
     }

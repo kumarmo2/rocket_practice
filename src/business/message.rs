@@ -1,18 +1,17 @@
-use crate::dal::{message, room, room_subscribers, user};
+use crate::dal::{message, room_subscribers};
 use crate::dtos::MessageCreateRequest;
 use chat_common_types::events::{MessageEvent, MessageEventType};
-use diesel::result::Error;
 use diesel::MysqlConnection;
 use manager::RabbitMqManager;
 
 pub fn create(
-    messageCreateRequest: &MessageCreateRequest,
+    message_create_request: &MessageCreateRequest,
     conn: &MysqlConnection,
     rabbit: &RabbitMqManager,
 ) -> Option<i32> {
     match room_subscribers::get(
-        messageCreateRequest.room_id,
-        messageCreateRequest.sender_id,
+        message_create_request.room_id,
+        message_create_request.sender_id,
         conn,
     ) {
         Ok(sub) => {
@@ -23,12 +22,13 @@ pub fn create(
             return None;
         }
     }
-    match message::create(messageCreateRequest, conn) {
+    match message::create(message_create_request, conn) {
         Some(id) => {
             send_message_event(
                 id,
                 MessageEventType::Send,
-                messageCreateRequest.sender_id,
+                message_create_request.sender_id,
+                message_create_request.room_id,
                 rabbit,
             );
             return Some(id);
@@ -42,14 +42,16 @@ pub fn create(
 
 fn send_message_event(
     id: i32,
-    message_type: MessageEventType,
+    message_event_type: MessageEventType,
     user_id: i32,
+    room_id: i32,
     rabbit: &RabbitMqManager,
 ) {
     let event = MessageEvent {
         id,
         user_id,
-        event_type: MessageEventType::Send,
+        event_type: message_event_type,
+        room_id,
     };
 
     rabbit.publish_message_to_queue_sync("messages", &event);

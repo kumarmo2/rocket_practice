@@ -1,14 +1,8 @@
 pub mod user;
 
-use crate::dtos::{CreateRoomRequest, CreateUserRequest};
 // use crate::dtos::CreateUserRequest;
 use crate::schema::*;
-use crate::utils;
-use diesel::mysql::MysqlConnection;
-use diesel::prelude::*;
-use diesel::result::Error;
-use diesel::{Insertable, Queryable, QueryableByName};
-use rocket::http::Status;
+use diesel::{Queryable, QueryableByName};
 use rocket::request::Request;
 use rocket::response;
 use rocket::response::{Responder, Response};
@@ -16,7 +10,7 @@ use rocket_contrib::databases::diesel;
 use std::io::Cursor;
 use std::sync::{Arc, Mutex};
 
-#[derive(Queryable)]
+#[derive(Queryable, Debug)]
 pub struct User {
     pub id: i32,
     pub name: String,
@@ -80,16 +74,6 @@ pub struct RoomSubscriber {
     pub room_id: i32,
 }
 
-impl RoomSubscriber {
-    pub fn new(member_id: i32, room_id: i32) -> Self {
-        RoomSubscriber {
-            // id,
-            member_id,
-            room_id,
-        }
-    }
-}
-
 #[derive(Debug, Queryable, QueryableByName)]
 #[table_name = "messages"]
 pub struct Message {
@@ -99,7 +83,8 @@ pub struct Message {
     pub content: String,
 }
 
-#[derive(Debug, Queryable)]
+#[derive(Debug, Queryable, QueryableByName)]
+#[table_name = "queues"]
 pub struct Queue {
     pub id: i32,
     pub user_id: i32,
