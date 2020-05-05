@@ -1,9 +1,13 @@
-use crate::view_models::Home;
+use crate::view_models::Empty;
 use rocket_contrib::templates::Template;
 
+// Right now, just a bare bone html is being served from the server.
+// Rendering is still being done on client side. later on need to figure
+// out how we can do SSR.
 #[get("/")]
 pub fn index() -> Template {
-    Template::render("index", Home {})
+    // TODO: need to see if there is any alternate to providing the Empty struct.
+    Template::render("index", Empty {})
 }
 
 #[get("/dummy")]

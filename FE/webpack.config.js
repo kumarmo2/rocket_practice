@@ -2,6 +2,7 @@ const path = require("path");
 
 const buildPath = path.resolve(__dirname, "../public");
 
+//TODO: need to add webpack-dev-server for faster development.
 module.exports = {
     entry: {
         app: "./src/index.js"

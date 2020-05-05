@@ -36,7 +36,6 @@ use routes::user;
 fn main() {
     rocket::ignite()
         .mount("/", routes![routes::home::index, routes::home::dummy])
-        .mount("/chat", routes![routes::home::index])
         .mount(
             "/api/users",
             routes![
