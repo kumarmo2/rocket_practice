@@ -1,6 +1,9 @@
+use crate::view_models::Home;
+use rocket_contrib::templates::Template;
+
 #[get("/")]
-pub fn index() -> &'static str {
-    "Hello, world!"
+pub fn index() -> Template {
+    Template::render("index", Home {})
 }
 
 #[get("/dummy")]

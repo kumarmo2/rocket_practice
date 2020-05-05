@@ -11,7 +11,9 @@ extern crate diesel;
 extern crate rocket;
 use rocket::fairing::AdHoc;
 use rocket::http::Header;
+
 use rocket_contrib::serve::StaticFiles;
+use rocket_contrib::templates::Template;
 
 use manager::RabbitMqManager;
 
@@ -25,6 +27,7 @@ mod models;
 mod routes;
 mod schema;
 mod utils;
+mod view_models;
 
 use routes::message;
 use routes::room;
@@ -33,6 +36,7 @@ use routes::user;
 fn main() {
     rocket::ignite()
         .mount("/", routes![routes::home::index, routes::home::dummy])
+        .mount("/chat", routes![routes::home::index])
         .mount(
             "/api/users",
             routes![
@@ -55,7 +59,7 @@ fn main() {
             ],
         )
         .mount("/api/messages", routes![message::create, message::get])
-        .mount("/public", StaticFiles::from("./static"))
+        .mount("/public", StaticFiles::from("./public"))
         .manage(models::CounterWrapper::default())
         // TODO: read from the config.
         .manage(RabbitMqManager::new(
@@ -71,6 +75,7 @@ fn main() {
             Ok(rocket.manage(models::CustomKey(val)))
         }))
         .attach(models::MySqlDb::fairing())
+        .attach(Template::fairing())
         .attach(AdHoc::on_response("cors_respone", |_, res| {
             // TODO: only set CORS headers for selected endpoints and not for all
             res.set_header(Header::new("Access-Control-Allow-Origin", "*"));
