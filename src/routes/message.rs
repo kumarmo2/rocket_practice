@@ -1,11 +1,13 @@
 use crate::business::message;
-use crate::dtos::request_guards::ApiKey::ApiKey;
+use crate::dtos::request_guards::{AdminAuthorization, ApiKey::ApiKey};
 use crate::dtos::MessageCreateRequest;
 use crate::models::MySqlDb;
 
 use rocket::http::Status;
 use rocket::State;
 use rocket_contrib::json::Json;
+
+use chat_common_types::dtos as common_dtos;
 
 use manager::RabbitMqManager;
 
@@ -27,6 +29,30 @@ pub fn create(
         }
         None => {
             return Status::InternalServerError;
+        }
+    }
+}
+
+#[get("/<id>")]
+pub fn get(
+    _admin: AdminAuthorization,
+    id: i32,
+    conn: MySqlDb,
+) -> Result<Json<common_dtos::Message>, Status> {
+    if id < 1 {
+        return Err(Status::new(400, "Invalid message id"));
+    }
+    match message::get_by_id(id, &conn) {
+        Some(m) => {
+            return Ok(Json(common_dtos::Message {
+                id: m.id,
+                room_id: m.room_id,
+                sender_id: m.sender_id,
+                content: m.content,
+            }));
+        }
+        _ => {
+            return Err(Status::new(500, "something went wrong"));
         }
     }
 }

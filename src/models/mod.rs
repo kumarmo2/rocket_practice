@@ -39,18 +39,6 @@ pub struct Room {
     pub is_public: bool,
 }
 
-impl Room {
-    pub fn get_dummy() -> Room {
-        Room {
-            id: 1,
-            name: "kumar'2".to_string(),
-            creator_user_id: 2,
-            is_public: true,
-            url_identifier: "/cod/kumars".to_string(),
-        }
-    }
-}
-
 // I have implemented Responder trait just for illustraition purpose,
 // We should not expose models directly.
 impl<'r> Responder<'r> for Room {

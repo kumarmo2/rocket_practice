@@ -54,7 +54,7 @@ fn main() {
                 room::get_room_client_queues,
             ],
         )
-        .mount("/api/messages", routes![message::create])
+        .mount("/api/messages", routes![message::create, message::get])
         .mount("/public", StaticFiles::from("./static"))
         .manage(models::CounterWrapper::default())
         // TODO: read from the config.
