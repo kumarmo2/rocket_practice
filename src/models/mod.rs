@@ -16,6 +16,7 @@ pub struct User {
     pub name: String,
     pub age: i32,
     pub email: String,
+    pub password: String,
 }
 
 impl Default for User {
@@ -25,6 +26,7 @@ impl Default for User {
             name: String::new(),
             email: String::new(),
             age: 0,
+            password: String::new(),
         }
     }
 }

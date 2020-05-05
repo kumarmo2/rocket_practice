@@ -38,6 +38,7 @@ table! {
         name -> Varchar,
         age -> Integer,
         email -> Varchar,
+        password -> Varchar,
     }
 }
 
