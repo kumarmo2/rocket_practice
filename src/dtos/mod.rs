@@ -102,29 +102,16 @@ impl UserDto {
     }
 }
 
-// impl<'a> RoomDto<'a> {
 impl RoomDto {
-    // pub fn from_room_model(model: &Room) -> RoomDto {
     pub fn from_room_model(model: Room) -> RoomDto {
         RoomDto {
             id: model.id,
-            // name: &model.name,
             name: model.name,
-            // path: &model.path,
             path: model.url_identifier,
-        }
-    }
-
-    pub fn dummy_room_dto() -> RoomDto {
-        RoomDto {
-            id: 45,
-            name: "some_room".to_string(),
-            path: "dsfgdg".to_string(),
         }
     }
 }
 
-// impl<'r> Responder<'r> for RoomDto<'_> {
 impl<'r> Responder<'r> for RoomDto {
     fn respond_to(self, _: &Request) -> response::Result<'r> {
         Response::build()
