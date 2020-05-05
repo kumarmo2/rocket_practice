@@ -1,3 +1,6 @@
+[global]
+template_dir = "views"
+
 [dev]
 address = "0.0.0.0"
 custom_key = "devEnvironment"
