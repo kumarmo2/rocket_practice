@@ -1,21 +1,17 @@
 const path = require("path");
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const buildPath = path.resolve(__dirname, "../public");
 
-//TODO: need to add webpack-dev-server for faster development.
-module.exports = {
-    mode: "development",
+
+const commonConfig = {
     entry: {
         app: "./src/index.js"
     },
     output: {
-        filename: "main.js",
+        filename: "[name].[contenthash].js",
         path: buildPath,
-    },
-    devtool: 'inline-source-map', // this prevents creating minified bundle.
-    devServer: {
-        contentBase: buildPath,
-        port: 9000
     },
     module: { // laoders transform the assets.
         rules: [
@@ -41,5 +37,14 @@ module.exports = {
                 ]
             }
         ]
-    }
+    },
+    plugins: [
+        new CleanWebpackPlugin(),
+        new HTMLWebpackPlugin({
+            filename: '../views/index.hbs',
+            template: 'index.html',
+        })
+    ]
 }
+
+module.exports = commonConfig;
