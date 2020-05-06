@@ -38,6 +38,23 @@ const commonConfig = {
             }
         ]
     },
+    optimization: {
+        splitChunks: {
+            chunks: 'all', // consider all the chunks for optimization
+            name: true,
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    priority: -10 // need to understand priority.
+                },
+                default: { // need to look what these do.
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true
+                }
+            }
+        },
+    },
     plugins: [
         new CleanWebpackPlugin(),
         new HTMLWebpackPlugin({
