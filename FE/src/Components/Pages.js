@@ -3,19 +3,16 @@ import { Switch, Route } from 'react-router-dom';
 import SignUp from "./SignUp/SignUp";
 import Home from "./Home/Home";
 import { ChatListing } from "./ChatListing";
-import { BrowserRouter as Router } from 'react-router-dom';
 
 
 export default class Pages extends Component {
     render() {
         return (
-            <Router>
-                <Switch>
-                    <Route path="/signup" exact component={SignUp} />
-                    <Route path="/" exact component={Home} />
-                    <Route path="/chat" exact component={ChatListing} />
-                </Switch>
-            </Router>
+            <Switch>
+                <Route path="/signup" exact component={SignUp} />
+                <Route path="/" exact component={Home} />
+                <Route path="/chat" exact component={ChatListing} />
+            </Switch>
         )
     }
 }
