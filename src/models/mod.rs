@@ -14,7 +14,7 @@ use std::sync::{Arc, Mutex};
 pub struct User {
     pub id: i32,
     pub name: String,
-    pub age: i32,
+    pub age: Option<i32>,
     pub email: String,
     pub password: String,
 }
@@ -25,7 +25,7 @@ impl Default for User {
             id: 0,
             name: String::new(),
             email: String::new(),
-            age: 0,
+            age: Some(0),
             password: String::new(),
         }
     }

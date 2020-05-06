@@ -2,6 +2,7 @@ use crate::business::user as user_bl;
 use crate::dal::user;
 use crate::dtos::request_guards::ApiKey::ApiKey;
 use crate::dtos::responders::CorsResponder;
+use crate::dtos::responders::CustomStatusResponse;
 use crate::dtos::{CreateUserRequest, UserDto};
 use crate::models::MySqlDb;
 use chat_common_types::events::ClientEventQueueNameWrapper;
@@ -9,6 +10,7 @@ use manager::RabbitMqManager;
 use rocket::http::Status;
 use rocket::State;
 use rocket_contrib::json::Json;
+use validator::validate_email;
 
 #[get("/<id>")]
 pub fn get(_api_key: ApiKey, id: i32, conn: MySqlDb) -> Result<Json<UserDto>, Status> {
@@ -28,17 +30,33 @@ pub fn get(_api_key: ApiKey, id: i32, conn: MySqlDb) -> Result<Json<UserDto>, St
 }
 
 #[post("/", data = "<user_request>")]
-pub fn create(_api_key: ApiKey, user_request: Json<CreateUserRequest>, conn: MySqlDb) -> Json<()> {
+pub fn create(user_request: Json<CreateUserRequest>, conn: MySqlDb) -> CustomStatusResponse {
+    if !validate_email(&user_request.email) {
+        return CustomStatusResponse::new(Status::new(400, "Invalid email"));
+    }
+    if let Some(age_input) = user_request.age {
+        if age_input < 18 || age_input > 100 {
+            return CustomStatusResponse::new(Status::new(400, "age must be between 18 and 100"));
+        }
+    }
+    if user_request.password.len() < 6 || user_request.password.len() > 20 {
+        return CustomStatusResponse::new(Status::new(
+            400,
+            "Password must be between 6 and 20 characters",
+        ));
+    }
     match user::get_by_email(&user_request.email, &conn) {
         Some(_) => {
             println!("user found");
-            return Json(());
+            return CustomStatusResponse::new(Status::new(409, "Email already exists"));
         }
         None => {
             println!("no user found by the email: {}", &user_request.email);
         }
     }
-    match user::create_from_request(&user_request, &conn) {
+    let pass = String::from(&user_request.password);
+    let hashed_pass = bcrypt::hash(pass, bcrypt::DEFAULT_COST).expect("could not created hash");
+    match user::create_from_request(&user_request, &hashed_pass, &conn) {
         Ok(_) => {
             println!("user created");
         }
@@ -46,7 +64,7 @@ pub fn create(_api_key: ApiKey, user_request: Json<CreateUserRequest>, conn: MyS
             println!("could not create user: {}", reason);
         }
     }
-    Json(())
+    CustomStatusResponse::new(Status::Created)
 }
 
 #[options("/<id>/events/register")]

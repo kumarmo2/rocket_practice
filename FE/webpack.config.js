@@ -4,6 +4,7 @@ const buildPath = path.resolve(__dirname, "../public");
 
 //TODO: need to add webpack-dev-server for faster development.
 module.exports = {
+    mode: "development",
     entry: {
         app: "./src/index.js"
     },
@@ -11,6 +12,7 @@ module.exports = {
         filename: "main.js",
         path: buildPath,
     },
+    devtool: 'inline-source-map', // this prevents creating minified bundle.
     devServer: {
         contentBase: buildPath,
         port: 9000
