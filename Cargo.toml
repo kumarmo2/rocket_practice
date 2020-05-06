@@ -16,6 +16,8 @@ uuid = {version = "0.8.1", features = ["v4"]}
 smol = "0.1.4"
 chat_common_types = {git = "https://github.com/kumarmo2/chat_common_types.git", branch = "master"}
 manager = { git = "https://github.com/kumarmo2/rabbitmq_manager.git", branch = "master"}
+validator = "0.10.0"
+bcrypt = "0.7.0"
 
 [dependencies.rocket_contrib]
 version = "0.4.4"

@@ -1,13 +1,11 @@
 use crate::dtos::CreateUserRequest;
 use crate::models::User;
-use crate::schema::*;
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 use diesel::result::Error;
 
 pub fn get_by_id(id_input: i32, conn: &MysqlConnection) -> Result<User, &'static str> {
     use crate::schema::users::dsl::*;
-    // let results: Vec<User> = users.filter(id.eq(id)).load::<User>(conn);
     let results: Result<Vec<User>, Error> = users.filter(id.eq(id_input)).load::<User>(conn);
     match results {
         Ok(mut list) => {
@@ -27,10 +25,18 @@ pub fn get_by_id(id_input: i32, conn: &MysqlConnection) -> Result<User, &'static
 
 pub fn create_from_request(
     create_request: &CreateUserRequest,
+    hashed_pass: &str,
     conn: &MysqlConnection,
 ) -> Result<(), &'static str> {
-    let result = diesel::insert_into(users::table)
-        .values(create_request)
+    use crate::schema::users::dsl::*;
+
+    let result = diesel::insert_into(users)
+        .values((
+            name.eq(&create_request.name),
+            age.eq(create_request.age),
+            email.eq(&create_request.email),
+            password.eq(hashed_pass),
+        ))
         .execute(conn);
 
     match result {

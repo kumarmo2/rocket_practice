@@ -36,8 +36,9 @@ table! {
     users (id) {
         id -> Integer,
         name -> Varchar,
-        age -> Integer,
+        age -> Nullable<Integer>,
         email -> Varchar,
+        password -> Varchar,
     }
 }
 

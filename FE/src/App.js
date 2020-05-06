@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
+import { ThemeProvider } from '@material-ui/core';
+import theme from "./theme";
+import Pages from "./Components/Pages";
 
 
 export default class App extends Component {
     render() {
-        return <h1>This is the reacsdfsdsdfsdfsddfsdflft App.</h1>
+        return (
+            <ThemeProvider theme={theme}>
+                <Pages />
+            </ThemeProvider>
+        )
     }
 }

@@ -31,8 +31,9 @@ pub struct CreateRoomRequest {
 #[table_name = "users"]
 pub struct CreateUserRequest {
     pub name: String,
-    pub age: i32,
+    pub age: Option<i32>,
     pub email: String,
+    pub password: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -83,7 +84,6 @@ impl MessageCreateRequest {
 pub struct UserDto {
     pub id: i32,
     pub name: String,
-    pub age: i32,
     pub email: String,
 }
 
@@ -96,7 +96,6 @@ impl UserDto {
         UserDto {
             id: user.id,
             name: user.name,
-            age: user.age,
             email: user.email,
         }
     }
