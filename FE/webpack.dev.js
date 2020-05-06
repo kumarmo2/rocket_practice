@@ -13,5 +13,4 @@ const devConfig = Object.assign({}, commonConfig, {
     },
 });
 
-// const devConfig = Object.assign({}, commonConfig);
 module.exports = devConfig;
