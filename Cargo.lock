@@ -786,8 +786,8 @@ dependencies = [
 
 [[package]]
 name = "manager"
-version = "0.1.13"
-source = "git+https://github.com/kumarmo2/rabbitmq_manager.git#8c584590a2d018437bd7fbd53c4c8b0df482d0cc"
+version = "0.1.14"
+source = "git+https://github.com/kumarmo2/rabbitmq_manager.git#1fa8a0ba2a72482f902e51d00d7edb8a1f0cf5bf"
 dependencies = [
  "lapin",
  "r2d2",
