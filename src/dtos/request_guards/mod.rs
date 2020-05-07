@@ -60,7 +60,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for UserAuthentication {
         // TODO: We should probably check in the DB(cache) for user availalibity.
         match result {
             Ok(token_data) => Outcome::Success(token_data.claims),
-            Err(reason) => Outcome::Failure((Status::Unauthorized, Status::Unauthorized)),
+            Err(_) => Outcome::Failure((Status::Unauthorized, Status::Unauthorized)),
         }
     }
 }

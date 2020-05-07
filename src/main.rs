@@ -10,7 +10,6 @@ extern crate diesel;
 #[macro_use]
 extern crate rocket;
 use rocket::fairing::AdHoc;
-use rocket::http::Header;
 
 use rocket_contrib::serve::StaticFiles;
 use rocket_contrib::templates::Template;
