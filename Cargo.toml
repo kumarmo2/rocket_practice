@@ -11,7 +11,7 @@ rocket = "0.4.4"
 lapin = "0.39.7"
 serde = { version = "1.0", features = ["derive"] }
 diesel = { version = "1.0.0", features = ["mysql"] }
-base64 = "0.12.0"
+base64 = "0.12.1"
 uuid = {version = "0.8.1", features = ["v4"]}
 smol = "0.1.4"
 chat_common_types = {git = "https://github.com/kumarmo2/chat_common_types.git", branch = "master"}
