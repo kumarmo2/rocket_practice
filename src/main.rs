@@ -10,7 +10,6 @@ extern crate diesel;
 #[macro_use]
 extern crate rocket;
 use rocket::fairing::AdHoc;
-use rocket::http::Header;
 
 use rocket_contrib::serve::StaticFiles;
 use rocket_contrib::templates::Template;
@@ -76,10 +75,13 @@ fn main() {
         }))
         .attach(models::MySqlDb::fairing())
         .attach(Template::fairing())
-        .attach(AdHoc::on_response("cors_respone", |_, res| {
-            // TODO: only set CORS headers for selected endpoints and not for all
-            res.set_header(Header::new("Access-Control-Allow-Origin", "*"));
-        }))
-        .register(catchers![error_catchers::bad_request])
+        //  .attach(AdHoc::on_response("cors_respone", |_, res| {
+        //     // TODO: only set CORS headers for selected endpoints and not for all
+        //     res.set_header(Header::new("Access-Control-Allow-Origin", "*"));
+        // }))
+        .register(catchers![
+            error_catchers::bad_request,
+            error_catchers::unauthorized
+        ])
         .launch();
 }

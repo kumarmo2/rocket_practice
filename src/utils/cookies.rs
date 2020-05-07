@@ -9,7 +9,7 @@ pub fn set_user_cookie(user_id: i32, cookies: &mut Cookies) {
     let mut claims = HashMap::new();
     claims.insert("id", user_id);
     let jwt = jsonwebtoken::encode(&header, &claims, constants::JWT_SECRET.as_bytes()).unwrap();
-    set_cookie("auth".to_string(), jwt, cookies);
+    set_cookie(constants::USER_AUTH_COOKIE_NAME.to_string(), jwt, cookies);
 }
 
 fn set_cookie(name: String, value: String, cookies: &mut Cookies) {
@@ -22,6 +22,5 @@ fn set_cookie(name: String, value: String, cookies: &mut Cookies) {
         .path("/")
         .finish();
 
-    println!("new cookie: {:?}", cookie);
     cookies.add(cookie);
 }

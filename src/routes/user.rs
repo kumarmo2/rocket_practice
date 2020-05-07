@@ -90,18 +90,26 @@ pub fn register_user_event_queue(
     id: i32,
     conn: MySqlDb,
     rabbit: State<RabbitMqManager>,
-) -> Result<Json<ClientEventQueueNameWrapper>, Status> {
+) -> Result<Json<ClientEventQueueNameWrapper>, CustomStatusResponse> {
     if id < 1 {
-        return Err(Status::new(400, "invalid user id"));
+        return Err(CustomStatusResponse::new(Status::new(
+            400,
+            "invalid user id",
+        )));
     }
     match user_bl::get_user_by_id(id, &conn) {
         Ok(_) => {}
         Err(reason) => {
-            return Err(Status::new(400, reason));
+            return Err(CustomStatusResponse::new(Status::new(400, reason)));
         }
     }
     match user_bl::register_user(id, &rabbit, &conn) {
         Some(queue_name) => return Ok(Json(ClientEventQueueNameWrapper { queue_name })),
-        None => return Err(Status::new(500, "something went wrong, try again")),
+        None => {
+            return Err(CustomStatusResponse::new(Status::new(
+                500,
+                "something went wrong, try again",
+            )))
+        }
     }
 }

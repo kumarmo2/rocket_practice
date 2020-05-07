@@ -1,5 +1,5 @@
 use crate::business::room;
-use crate::dtos::request_guards::{AdminAuthorization, ApiKey::ApiKey};
+use crate::dtos::request_guards::{AdminAuthorization, ApiKey::ApiKey, UserAuthentication};
 use crate::dtos::{CreateRoomRequest, RoomDto};
 use crate::models::{self, CounterWrapper, CustomKey, MySqlDb};
 
@@ -12,7 +12,11 @@ use chat_common_types::dtos::{self as common_dtos, RoomInfo};
 use std::thread;
 
 #[post("/", data = "<request>")]
-pub fn create(_api_key: ApiKey, request: Json<CreateRoomRequest>, conn: MySqlDb) -> http::Status {
+pub fn create(
+    _user_authentication: UserAuthentication,
+    request: Json<CreateRoomRequest>,
+    conn: MySqlDb,
+) -> http::Status {
     println!("create room request: {:?}", request);
     if let Some(reason) = validate_create_room_request(&request) {
         println!("bad request");
