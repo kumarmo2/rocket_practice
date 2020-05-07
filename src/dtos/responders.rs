@@ -16,6 +16,7 @@ impl CustomStatusResponse {
     }
 }
 
+// TODO: update this to send json instead of just text.
 impl<'r> Responder<'r> for CustomStatusResponse {
     fn respond_to(self, _: &rocket::Request<'_>) -> Result<Response<'r>, Status> {
         let reader = Cursor::new(self.status.reason);

@@ -1,3 +1,5 @@
+pub mod cookies;
+
 use base64::encode;
 use uuid::Uuid;
 

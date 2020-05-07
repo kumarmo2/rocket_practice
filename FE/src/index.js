@@ -7,12 +7,12 @@ import theme from './theme';
 import App from './App';
 
 render(
-  <Provider>
-    <Router>
-      <ThemeProvider theme={theme}>
-        <App />
-      </ThemeProvider>
-    </Router>
-  </Provider>,
+  // <Provider>
+  <Router>
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
+  </Router>,
+  // </Provider>,
   document.getElementById('root')
 );
