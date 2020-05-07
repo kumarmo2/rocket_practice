@@ -12,8 +12,19 @@ pub fn set_user_cookie(user_id: i32, cookies: &mut Cookies) {
     set_cookie(constants::USER_AUTH_COOKIE_NAME.to_string(), jwt, cookies);
 }
 
+pub fn delete_user_cookie(cookies: &mut Cookies) {
+    delete_cookie(constants::USER_AUTH_COOKIE_NAME, cookies);
+}
+
+fn delete_cookie(name: &'static str, cookies: &mut Cookies) {
+    let mut cookie = Cookie::named(name);
+    cookie.set_path("/");
+    cookies.remove(cookie);
+}
+
 fn set_cookie(name: String, value: String, cookies: &mut Cookies) {
     let cookie = Cookie::build(name, value)
+        // TODO: set the domain.
         // TODO: need to use secure cookie on production.
         .http_only(true) // cannot be accessed by javascript.
         .same_site(SameSite::Lax)

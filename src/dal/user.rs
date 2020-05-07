@@ -25,6 +25,15 @@ pub fn get_by_id(id_input: i32, conn: &MysqlConnection) -> Result<User, &'static
     }
 }
 
+pub fn get_by_email(email_input: &str, conn: &MysqlConnection) -> Result<User, Error> {
+    use crate::schema::users::dsl::*;
+
+    // Since, diesel has already been injected in all the layers of application because of how rocket
+    // provides out of the box solution for DbConnections, which is kinda sad, we will return diesel::error::Error,
+    // as it can let us make better decisisions in upper layers.
+    users.filter(email.eq(email_input)).get_result::<User>(conn)
+}
+
 pub fn create_from_request(
     create_request: &CreateUserRequest,
     hashed_pass: &str,
@@ -54,23 +63,23 @@ pub fn create_from_request(
     }
 }
 
-pub fn get_by_email(email_from_request: &str, conn: &MysqlConnection) -> Option<User> {
-    use crate::schema::users::dsl::*;
-    let results = users
-        .filter(email.eq(email_from_request))
-        .limit(1)
-        .load::<User>(conn);
-    match results {
-        Ok(mut list) => {
-            if list.len() < 1 {
-                return None;
-            } else {
-                return Some(list.remove(0));
-            }
-        }
-        Err(reason) => {
-            println!("could not fetch user, reason: {}", reason);
-            return None;
-        }
-    }
-}
+// pub fn get_by_email(email_from_request: &str, conn: &MysqlConnection) -> Option<User> {
+//     use crate::schema::users::dsl::*;
+//     let results = users
+//         .filter(email.eq(email_from_request))
+//         .limit(1)
+//         .load::<User>(conn);
+//     match results {
+//         Ok(mut list) => {
+//             if list.len() < 1 {
+//                 return None;
+//             } else {
+//                 return Some(list.remove(0));
+//             }
+//         }
+//         Err(reason) => {
+//             println!("could not fetch user, reason: {}", reason);
+//             return None;
+//         }
+//     }
+// }

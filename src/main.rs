@@ -35,7 +35,15 @@ use routes::user;
 
 fn main() {
     rocket::ignite()
-        .mount("/", routes![routes::home::index, routes::home::dummy])
+        .mount(
+            "/",
+            routes![
+                routes::home::index,
+                routes::home::dummy,
+                user::signin,
+                user::signout
+            ],
+        )
         .mount(
             "/api/users",
             routes![

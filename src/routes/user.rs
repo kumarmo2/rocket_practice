@@ -3,9 +3,11 @@ use crate::dal::user;
 use crate::dtos::request_guards::ApiKey::ApiKey;
 use crate::dtos::responders::CorsResponder;
 use crate::dtos::responders::CustomStatusResponse;
-use crate::dtos::{CreateUserRequest, UserDto};
+use crate::dtos::{CreateUserRequest, SignInRequest, UserDto};
 use crate::models::MySqlDb;
-use crate::utils::cookies::set_user_cookie;
+use crate::utils::cookies::{delete_user_cookie, set_user_cookie};
+
+use diesel::result::Error;
 
 use chat_common_types::events::ClientEventQueueNameWrapper;
 
@@ -15,6 +17,8 @@ use rocket::{
     http::{Cookies, Status},
     State,
 };
+
+use std::ops::Deref;
 
 use rocket_contrib::json::Json;
 use validator::validate_email;
@@ -32,6 +36,67 @@ pub fn get(_api_key: ApiKey, id: i32, conn: MySqlDb) -> Result<Json<UserDto>, St
         Err(reason) => {
             println!("user not found: {}", reason);
             Err(Status::new(404, reason))
+        }
+    }
+}
+
+#[post("/signout")]
+pub fn signout(mut cookies: Cookies) -> CustomStatusResponse {
+    delete_user_cookie(&mut cookies);
+    CustomStatusResponse::new(Status::Ok)
+}
+
+#[post("/signin", data = "<signin_request>")]
+pub fn signin(
+    signin_request: Json<SignInRequest>,
+    conn: MySqlDb,
+    mut cookies: Cookies,
+) -> Result<Json<UserDto>, CustomStatusResponse> {
+    if !validate_email(&signin_request.email) {
+        return Err(CustomStatusResponse::new(Status::new(400, "Invalid email")));
+    }
+    if &signin_request.password == "" {
+        return Err(CustomStatusResponse::new(Status::new(
+            400,
+            "Invalid password",
+        )));
+    }
+    let user_model;
+    match user_bl::get_user_by_email(&signin_request.email, &conn) {
+        Ok(result) => {
+            user_model = result;
+        }
+        Err(reason) => match reason {
+            Error::NotFound => {
+                return Err(CustomStatusResponse::new(Status::new(
+                    404,
+                    "email does not exists",
+                )))
+            }
+            _ => return Err(CustomStatusResponse::new(Status::InternalServerError)),
+        },
+    }
+
+    match bcrypt::verify(
+        signin_request.deref().password.as_bytes(),
+        &user_model.password,
+    ) {
+        Ok(is_match) => {
+            if is_match {
+                set_user_cookie(user_model.id, &mut cookies);
+                return Ok(Json(UserDto::from_user_model(user_model)));
+            }
+            return Err(CustomStatusResponse::new(Status::new(
+                401,
+                "Email and password does not match",
+            )));
+        }
+        Err(reason) => {
+            println!("bcrypt::verify failed, reason: {}", reason);
+            return Err(CustomStatusResponse::new(Status::new(
+                500,
+                "Something went wrong, try again",
+            )));
         }
     }
 }
@@ -57,13 +122,21 @@ pub fn create(
         ));
     }
     match user::get_by_email(&user_request.email, &conn) {
-        Some(_) => {
+        Ok(_) => {
             println!("user found");
             return CustomStatusResponse::new(Status::new(409, "Email already exists"));
         }
-        None => {
-            println!("no user found by the email: {}", &user_request.email);
-        }
+        Err(reason) => match reason {
+            Error::NotFound => {
+                println!("no user found by the email: {}", &user_request.email);
+            }
+            _ => {
+                return CustomStatusResponse::new(Status::new(
+                    500,
+                    "Something went wrong, try again",
+                ));
+            }
+        },
     }
     let pass = String::from(&user_request.password);
     let hashed_pass = bcrypt::hash(pass, bcrypt::DEFAULT_COST).expect("could not created hash");
