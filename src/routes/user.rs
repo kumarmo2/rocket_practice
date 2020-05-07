@@ -5,10 +5,17 @@ use crate::dtos::responders::CorsResponder;
 use crate::dtos::responders::CustomStatusResponse;
 use crate::dtos::{CreateUserRequest, UserDto};
 use crate::models::MySqlDb;
+use crate::utils::cookies::set_user_cookie;
+
 use chat_common_types::events::ClientEventQueueNameWrapper;
+
 use manager::RabbitMqManager;
-use rocket::http::Status;
-use rocket::State;
+
+use rocket::{
+    http::{Cookies, Status},
+    State,
+};
+
 use rocket_contrib::json::Json;
 use validator::validate_email;
 
@@ -30,7 +37,11 @@ pub fn get(_api_key: ApiKey, id: i32, conn: MySqlDb) -> Result<Json<UserDto>, St
 }
 
 #[post("/", data = "<user_request>")]
-pub fn create(user_request: Json<CreateUserRequest>, conn: MySqlDb) -> CustomStatusResponse {
+pub fn create(
+    user_request: Json<CreateUserRequest>,
+    mut cookies: Cookies,
+    conn: MySqlDb,
+) -> CustomStatusResponse {
     if !validate_email(&user_request.email) {
         return CustomStatusResponse::new(Status::new(400, "Invalid email"));
     }
@@ -57,8 +68,8 @@ pub fn create(user_request: Json<CreateUserRequest>, conn: MySqlDb) -> CustomSta
     let pass = String::from(&user_request.password);
     let hashed_pass = bcrypt::hash(pass, bcrypt::DEFAULT_COST).expect("could not created hash");
     match user::create_from_request(&user_request, &hashed_pass, &conn) {
-        Ok(_) => {
-            println!("user created");
+        Ok(id) => {
+            set_user_cookie(id, &mut cookies);
         }
         Err(reason) => {
             println!("could not create user: {}", reason);
@@ -67,6 +78,7 @@ pub fn create(user_request: Json<CreateUserRequest>, conn: MySqlDb) -> CustomSta
     CustomStatusResponse::new(Status::Created)
 }
 
+// TODO: Remove this after testing because we are serving FE from the same site so this should not be needed.
 #[options("/<id>/events/register")]
 pub fn cors_for_register_events_endpoint(id: i32) -> CorsResponder {
     CorsResponder {}

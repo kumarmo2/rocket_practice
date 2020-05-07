@@ -1,5 +1,7 @@
+use crate::dal::last_insert_id;
 use crate::dtos::CreateUserRequest;
 use crate::models::User;
+use diesel::dsl::select;
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 use diesel::result::Error;
@@ -27,7 +29,7 @@ pub fn create_from_request(
     create_request: &CreateUserRequest,
     hashed_pass: &str,
     conn: &MysqlConnection,
-) -> Result<(), &'static str> {
+) -> Result<i32, &'static str> {
     use crate::schema::users::dsl::*;
 
     let result = diesel::insert_into(users)
@@ -41,7 +43,9 @@ pub fn create_from_request(
 
     match result {
         Ok(_) => {
-            return Ok(());
+            // TODO: Need to fetch the id from the first call only.
+            let ids = select(last_insert_id).load(conn).unwrap();
+            return Ok(ids[0]);
         }
         Err(_) => {
             // log the error.

@@ -20,6 +20,7 @@ use manager::RabbitMqManager;
 // mod routes::home;
 
 mod business;
+mod constants;
 mod dal;
 mod dtos;
 mod error_catchers;

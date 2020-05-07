@@ -18,6 +18,8 @@ chat_common_types = {git = "https://github.com/kumarmo2/chat_common_types.git", 
 manager = { git = "https://github.com/kumarmo2/rabbitmq_manager.git", branch = "master"}
 validator = "0.10.0"
 bcrypt = "0.7.0"
+jsonwebtoken = "5.0.1"
+time = "0.1.42"
 
 [dependencies.rocket_contrib]
 version = "0.4.4"
