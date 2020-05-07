@@ -1,5 +1,3 @@
-import ChatListing from "./components/ChatListing";
+import ChatListing from './components/ChatListing';
 
-export {
-    ChatListing,
-};
+export { ChatListing };

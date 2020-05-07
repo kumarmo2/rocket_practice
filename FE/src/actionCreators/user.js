@@ -1,8 +1,1 @@
-
-export const setUserInfo = ({
-    name,
-    email,
-    id,
-}) => {
-
-}
+export const setUserInfo = ({ name, email, id }) => {}
