@@ -10,6 +10,7 @@ edition = "2018"
 rocket = "0.4.4"
 lapin = "0.39.7"
 serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 diesel = { version = "1.0.0", features = ["mysql"] }
 base64 = "0.12.1"
 uuid = {version = "0.8.1", features = ["v4"]}

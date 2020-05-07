@@ -1477,6 +1477,7 @@ dependencies = [
  "rocket",
  "rocket_contrib",
  "serde",
+ "serde_json",
  "smol",
  "time",
  "uuid",

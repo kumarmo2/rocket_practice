@@ -2,10 +2,13 @@ use rocket::{
     http::Status,
     response::{Responder, Response, ResponseBuilder},
 };
+use serde_json::to_string;
+use std::collections::HashMap;
 use std::io::Cursor;
 
 pub struct CorsResponder {}
 
+#[derive(Debug)]
 pub struct CustomStatusResponse {
     status: Status,
 }
@@ -16,10 +19,22 @@ impl CustomStatusResponse {
     }
 }
 
-// TODO: update this to send json instead of just text.
+// TODO: Need to check if Rocket provides out-of-the-box solution for this.
 impl<'r> Responder<'r> for CustomStatusResponse {
     fn respond_to(self, _: &rocket::Request<'_>) -> Result<Response<'r>, Status> {
-        let reader = Cursor::new(self.status.reason);
+        let mut map = HashMap::new();
+
+        match self.status.code {
+            200..=308 => {}
+            400..=599 => {
+                map.insert("error_message", self.status.reason);
+            }
+            _ => {}
+        }
+
+        let body = to_string(&map).unwrap();
+
+        let reader = Cursor::new(body);
         let response = ResponseBuilder::new(Response::new())
             .status(self.status)
             .sized_body(reader)
