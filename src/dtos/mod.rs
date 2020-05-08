@@ -36,6 +36,12 @@ pub struct CreateUserRequest {
     pub password: String,
 }
 
+#[derive(Deserialize)]
+pub struct SignInRequest {
+    pub email: String,
+    pub password: String,
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct RoomDto {
     pub id: i32,

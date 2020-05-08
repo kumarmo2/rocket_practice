@@ -1,15 +1,19 @@
-use crate::dal::queue;
-use crate::dal::user;
+use crate::dal::{queue, user};
 use crate::models::User;
 use crate::utils::generate_v4_base64_uuid;
 
-use diesel::MysqlConnection;
+use diesel::{result::Error, MysqlConnection};
+
 use manager::{AMQPValue, FieldTable, LongInt, QueueDeclareOptions, RabbitMqManager, ShortString};
 use smol::block_on;
 use std::collections::BTreeMap;
 
 pub fn get_user_by_id(id: i32, conn: &MysqlConnection) -> Result<User, &'static str> {
     user::get_by_id(id, conn)
+}
+
+pub fn get_user_by_email(email: &str, conn: &MysqlConnection) -> Result<User, Error> {
+    user::get_by_email(email, conn)
 }
 
 pub fn register_user(id: i32, rabbit: &RabbitMqManager, conn: &MysqlConnection) -> Option<String> {
