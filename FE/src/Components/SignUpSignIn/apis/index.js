@@ -12,8 +12,21 @@ export const createUser = ({ email, fullName, password }) => {
   });
 };
 
+export const signIn = (email, password) => {
+  if (!email || !password) {
+    return Promise.reject();
+  }
+  return fetch('/api/signin', {
+    method: 'POST',
+    body: JSON.stringify({
+      email,
+      password,
+    }),
+  });
+};
+
 export const signOut = () => {
-  return fetch('/signout', {
+  return fetch('/api/signout', {
     method: 'POSt',
   });
 };

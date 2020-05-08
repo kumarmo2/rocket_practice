@@ -3,7 +3,7 @@
     "browser": true,
     "es6": true
   },
-  "extends": ["plugin:prettier/recommended"],
+  "extends": ["plugin:prettier/recommended", "plugin:react/recommended"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -24,6 +24,6 @@
         "extensions": [".js", ".jsx"]
       }
     ],
-    "react/prefer-stateless-function": [0] // 0 for disabling the rule, which forces to make stateless components to be functional components.
+    "no-undef": "error"
   }
 }

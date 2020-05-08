@@ -6,8 +6,10 @@ import {
   Button,
   withStyles,
 } from '@material-ui/core';
-import { isValidEmail, isValidName } from '../../utils/inputValidations';
-import { createUser } from './apis';
+import { isValidEmail, isValidName } from '../../../utils/inputValidations';
+import { createUser, signIn } from '../apis';
+import PropTypes from 'prop-types';
+import { signInType, signUpType } from '../constants';
 
 const style = {
   root: {
@@ -16,7 +18,16 @@ const style = {
 };
 const StyledPasswordInput = withStyles(style)(TextField);
 
-export default class extends PureComponent {
+const propTypes = {
+  variant: PropTypes.oneOf([signInType, signUpType]),
+  history: PropTypes.object.isRequired,
+};
+
+const defaultProps = {
+  variant: signUpType,
+};
+
+export default class SignupSignIn extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -128,16 +139,14 @@ export default class extends PureComponent {
     });
   };
 
-  areAllInputValuesValid = () => {
+  isSignInSignUpBtnEnabled = () => {
     const { email, fullName, password } = this.state;
-    return (
-      email.value &&
-      !email.error &&
-      fullName.value &&
-      !fullName.error &&
-      password.value &&
-      !password.error
-    );
+    const { variant } = this.props;
+    let isEnabled =
+      !!email.value && !email.error && !!password.value && !password.error;
+    return variant == signIn
+      ? isEnabled
+      : isEnabled && !!fullName && !fullName.error;
   };
 
   handleSignUpClick = () => {
@@ -153,7 +162,21 @@ export default class extends PureComponent {
     }).then(response => {
       if (response.ok) {
         const { history } = this.props;
-        history && history.replace('/chat');
+        history && history.replace('/');
+      }
+    });
+  };
+
+  handleSignInClick = () => {
+    const { email, password } = this.state;
+    const emailValue = email.value;
+    const passwordValue = password.value;
+
+    // TODO: Show error messge of failure.
+    signIn(emailValue, passwordValue).then(response => {
+      if (response.ok) {
+        const { history } = this.props;
+        history && history.replace('/');
       }
     });
   };
@@ -161,7 +184,8 @@ export default class extends PureComponent {
   render() {
     // TODO: in the backend, start accepting the password as well.
     const { fullName, password } = this.state;
-    const isSubmitBtnDisabled = !this.areAllInputValuesValid();
+    const { variant } = this.props;
+    const isSubmitBtnEnabled = this.isSignInSignUpBtnEnabled();
     return (
       <Container maxWidth="sm">
         <TextField
@@ -175,15 +199,17 @@ export default class extends PureComponent {
           label="Email"
           required
         />
-        <TextField
-          onChange={this.handleNameChange}
-          error={fullName.error}
-          helperText={fullName.errorText}
-          fullWidth
-          placeholder="Full Name"
-          label="Full Name"
-          required
-        />
+        {variant == signUpType && (
+          <TextField
+            onChange={this.handleNameChange}
+            error={fullName.error}
+            helperText={fullName.errorText}
+            fullWidth
+            placeholder="Full Name"
+            label="Full Name"
+            required
+          />
+        )}
         <StyledPasswordInput
           onChange={this.handlePasswordChange}
           error={password.error}
@@ -196,15 +222,22 @@ export default class extends PureComponent {
         />
         <Box display="flex" justifyContent="center" mt={2}>
           <Button
-            disabled={isSubmitBtnDisabled}
-            onClick={this.handleSignUpClick}
+            disabled={!isSubmitBtnEnabled}
+            onClick={
+              variant === signUpType
+                ? this.handleSignUpClick
+                : this.handleSignInClick
+            }
             color="primary"
             variant="contained"
           >
-            Sign Up
+            {variant === signInType ? 'Sign In' : 'Sign Up'}
           </Button>
         </Box>
       </Container>
     );
   }
 }
+
+SignupSignIn.propTypes = propTypes;
+SignupSignIn.defaultProps = defaultProps;
