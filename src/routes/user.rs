@@ -40,13 +40,13 @@ pub fn get(_api_key: ApiKey, id: i32, conn: MySqlDb) -> Result<Json<UserDto>, St
     }
 }
 
-#[post("/signout")]
+#[post("/api/signout")]
 pub fn signout(mut cookies: Cookies) -> CustomStatusResponse {
     delete_user_cookie(&mut cookies);
     CustomStatusResponse::new(Status::Ok)
 }
 
-#[post("/signin", data = "<signin_request>")]
+#[post("/api/signin", data = "<signin_request>")]
 pub fn signin(
     signin_request: Json<SignInRequest>,
     conn: MySqlDb,
