@@ -11,3 +11,9 @@ export const createUser = ({ email, fullName, password }) => {
     }),
   });
 };
+
+export const signOut = () => {
+  return fetch('/signout', {
+    method: 'POSt',
+  });
+};

@@ -1,53 +1,53 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent } from 'react';
 import {
   Container,
   Box,
   TextField,
   Button,
   withStyles,
-} from "@material-ui/core";
-import { isValidEmail, isValidName } from "../../utils/inputValidations";
-import { createUser } from "./apis";
+} from '@material-ui/core';
+import { isValidEmail, isValidName } from '../../utils/inputValidations';
+import { createUser } from './apis';
 
 const style = {
   root: {
-    marginTop: "16px",
+    marginTop: '16px',
   },
 };
 const StyledPasswordInput = withStyles(style)(TextField);
 
-export default class SignUp extends PureComponent {
+export default class extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       email: {
-        value: "",
+        value: '',
         error: false,
-        errorText: "",
+        errorText: '',
       },
       fullName: {
-        value: "",
+        value: '',
         error: false,
-        errorText: "",
+        errorText: '',
       },
       password: {
-        value: "",
+        value: '',
         error: false,
-        errorText: "",
+        errorText: '',
       },
-      apiErrorMessage: "",
+      apiErrorMessage: '',
     };
   }
 
-  handleEmailChange = (event) => {
-    let value = (event.currentTarget && event.currentTarget.value) || "";
+  handleEmailChange = event => {
+    let value = (event.currentTarget && event.currentTarget.value) || '';
     value = value.trimLeft();
     if (!value) {
       this.setState({
         email: {
           value: value,
           error: true,
-          errorText: "Email cannot be empty",
+          errorText: 'Email cannot be empty',
         },
       });
       return;
@@ -59,7 +59,7 @@ export default class SignUp extends PureComponent {
         email: {
           value: value,
           error: true,
-          errorText: "Invalid Email",
+          errorText: 'Invalid Email',
         },
       });
       return;
@@ -69,20 +69,20 @@ export default class SignUp extends PureComponent {
       email: {
         value: value,
         error: false,
-        errorText: "",
+        errorText: '',
       },
     });
   };
 
-  handleNameChange = (event) => {
-    let value = (event.currentTarget && event.currentTarget.value) || "";
+  handleNameChange = event => {
+    let value = (event.currentTarget && event.currentTarget.value) || '';
     value = value.trimLeft();
     if (value.length < 3 || value.length > 100) {
       this.setState({
         fullName: {
           value,
           error: true,
-          errorText: "name should be between 3 and 100 characters",
+          errorText: 'name should be between 3 and 100 characters',
         },
       });
       return;
@@ -92,7 +92,7 @@ export default class SignUp extends PureComponent {
         fullName: {
           value,
           error: true,
-          errorText: "Invalid name",
+          errorText: 'Invalid name',
         },
       });
       return;
@@ -101,20 +101,20 @@ export default class SignUp extends PureComponent {
       fullName: {
         value,
         error: false,
-        errorText: "",
+        errorText: '',
       },
     });
   };
 
-  handlePasswordChange = (event) => {
-    let value = (event.currentTarget && event.currentTarget.value) || "";
+  handlePasswordChange = event => {
+    let value = (event.currentTarget && event.currentTarget.value) || '';
     value = value.trimLeft();
     if (value.length < 6 || value.length > 50) {
       this.setState({
         password: {
           value,
           error: true,
-          errorText: "Password must be between 6 and 50 characters",
+          errorText: 'Password must be between 6 and 50 characters',
         },
       });
       return;
@@ -123,7 +123,7 @@ export default class SignUp extends PureComponent {
       password: {
         value,
         error: false,
-        errorText: "",
+        errorText: '',
       },
     });
   };
@@ -150,10 +150,10 @@ export default class SignUp extends PureComponent {
       email: emailValue,
       fullName: name,
       password: passwordValue,
-    }).then((response) => {
+    }).then(response => {
       if (response.ok) {
         const { history } = this.props;
-        history && history.replace("/chat");
+        history && history.replace('/chat');
       }
     });
   };

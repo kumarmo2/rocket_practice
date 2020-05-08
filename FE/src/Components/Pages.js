@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import SignUp from './SignUp/SignUp';
+import SignUp from './SignUp';
 import Home from './Home/Home';
 import { ChatListing } from './ChatListing';
 
