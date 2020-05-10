@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Button } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import { signOut } from '../SignUpSignIn/apis/';
+import { get as getProfile } from '../../apis/profile';
 
 const propTypes = {
   history: PropTypes.object.isRequired,
@@ -29,6 +30,12 @@ export default class Home extends PureComponent {
         <h1>ChatListing page.</h1>
       </>
     );
+  }
+
+  componentDidMount() {
+    getProfile().then(response => {
+      console.log('profile api response: ', response);
+    });
   }
 }
 

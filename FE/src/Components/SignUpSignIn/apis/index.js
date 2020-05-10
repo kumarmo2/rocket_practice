@@ -1,8 +1,10 @@
+import { api } from '../../../utils/networkUtilities/FetchWrapper';
 export const createUser = ({ email, fullName, password }) => {
   if (!email || !fullName || !password) {
     return Promise.reject('Enter All details');
   }
-  return fetch('/api/users/', {
+  // return fetch('/api/users/', {
+  return api('/api/users/', {
     method: 'POST',
     body: JSON.stringify({
       email,
@@ -16,7 +18,7 @@ export const signIn = (email, password) => {
   if (!email || !password) {
     return Promise.reject();
   }
-  return fetch('/api/signin', {
+  return api('/api/signin', {
     method: 'POST',
     body: JSON.stringify({
       email,
@@ -26,7 +28,7 @@ export const signIn = (email, password) => {
 };
 
 export const signOut = () => {
-  return fetch('/api/signout', {
+  return api('/api/signout', {
     method: 'POSt',
   });
 };

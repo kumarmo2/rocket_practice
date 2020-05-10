@@ -93,6 +93,12 @@ pub struct UserDto {
     pub email: String,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UserJwtPayload {
+    pub id: i32,
+    pub exp: u64,
+}
+
 impl UserDto {
     // I decided to took the ownership of User Model, because creation
     // of dto from the model should be the last step i.e After we have created the dto,
