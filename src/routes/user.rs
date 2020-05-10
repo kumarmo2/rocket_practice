@@ -1,6 +1,6 @@
 use crate::business::user as user_bl;
 use crate::dal::user;
-use crate::dtos::request_guards::ApiKey::ApiKey;
+use crate::dtos::request_guards::{ApiKey::ApiKey, UserAuthentication};
 use crate::dtos::responders::CorsResponder;
 use crate::dtos::responders::CustomStatusResponse;
 use crate::dtos::{CreateUserRequest, SignInRequest, UserDto};
@@ -23,8 +23,15 @@ use std::ops::Deref;
 use rocket_contrib::json::Json;
 use validator::validate_email;
 
+// This endpoint should be used for getting the users other than yourself.
+// If you want to see yours data, better use /me/profile endpoint.
 #[get("/<id>")]
-pub fn get(_api_key: ApiKey, id: i32, conn: MySqlDb) -> Result<Json<UserDto>, Status> {
+pub fn get(
+    _api_key: ApiKey,
+    id: i32,
+    _user_authentication: UserAuthentication,
+    conn: MySqlDb,
+) -> Result<Json<UserDto>, Status> {
     if id < 1 {
         return Err(Status::new(400, "invalid user id"));
     }
