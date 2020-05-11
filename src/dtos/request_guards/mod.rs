@@ -11,6 +11,7 @@ use rocket::{
     Outcome,
 };
 
+use std::convert::Into;
 use std::ops::Deref;
 
 pub struct AdminAuthorization();
@@ -47,6 +48,12 @@ impl Deref for UserAuthentication {
     type Target = User;
     fn deref(&self) -> &Self::Target {
         &self.0
+    }
+}
+
+impl Into<User> for UserAuthentication {
+    fn into(self) -> User {
+        self.0
     }
 }
 

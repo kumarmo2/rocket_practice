@@ -3,7 +3,7 @@ use crate::models::Room;
 use crate::utils;
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
-use diesel::sql_types::Integer;
+use diesel::{result::Error, sql_types::Integer};
 
 pub fn get_all(conn: &diesel::MysqlConnection) -> Result<Vec<Room>, &'static str> {
     use crate::schema::rooms::dsl::*;
@@ -58,4 +58,9 @@ pub fn get_by_id(id: i32, conn: &MysqlConnection) -> Result<Room, &'static str> 
             return Err("some error");
         }
     }
+}
+
+pub fn get_rooms_from_ids(ids: &[i32], conn: &MysqlConnection) -> Result<Vec<Room>, Error> {
+    use crate::schema::rooms::dsl::*;
+    rooms.filter(id.eq_any(ids)).load(conn)
 }

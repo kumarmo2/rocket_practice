@@ -94,6 +94,15 @@ pub struct UserDto {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct Profile {
+    #[serde(rename = "userId")]
+    pub user_id: i32,
+    pub name: String,
+    pub email: String,
+    pub rooms: Option<Vec<RoomDto>>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct UserJwtPayload {
     pub id: i32,
     pub exp: u64,

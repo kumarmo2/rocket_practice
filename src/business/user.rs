@@ -1,7 +1,8 @@
 use crate::dal::{queue, user};
-use crate::models::User;
+use crate::models::{Room, RoomSubscriber, User};
 use crate::utils::generate_v4_base64_uuid;
 
+use crate::dal::{room, room_subscribers::get_rooms_of_user};
 use diesel::{result::Error, MysqlConnection};
 
 use manager::{AMQPValue, FieldTable, LongInt, QueueDeclareOptions, RabbitMqManager, ShortString};
@@ -14,6 +15,22 @@ pub fn get_user_by_id(id: i32, conn: &MysqlConnection) -> Result<User, &'static 
 
 pub fn get_user_by_email(email: &str, conn: &MysqlConnection) -> Result<User, Error> {
     user::get_by_email(email, conn)
+}
+
+pub fn get_rooms(id: i32, conn: &MysqlConnection) -> Result<Vec<Room>, Error> {
+    let room_subscriptions: Vec<RoomSubscriber>;
+    match get_rooms_of_user(id, conn) {
+        Ok(res) => {
+            room_subscriptions = res;
+        }
+        Err(reason) => {
+            println!("error fetching room of user, reasons: {:?}", reason);
+            return Err(reason);
+        }
+    }
+
+    let room_ids: Vec<i32> = room_subscriptions.iter().map(|sub| sub.room_id).collect();
+    room::get_rooms_from_ids(&room_ids, conn)
 }
 
 pub fn register_user(id: i32, rabbit: &RabbitMqManager, conn: &MysqlConnection) -> Option<String> {
