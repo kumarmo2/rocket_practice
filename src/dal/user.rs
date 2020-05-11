@@ -62,24 +62,3 @@ pub fn create_from_request(
         }
     }
 }
-
-// pub fn get_by_email(email_from_request: &str, conn: &MysqlConnection) -> Option<User> {
-//     use crate::schema::users::dsl::*;
-//     let results = users
-//         .filter(email.eq(email_from_request))
-//         .limit(1)
-//         .load::<User>(conn);
-//     match results {
-//         Ok(mut list) => {
-//             if list.len() < 1 {
-//                 return None;
-//             } else {
-//                 return Some(list.remove(0));
-//             }
-//         }
-//         Err(reason) => {
-//             println!("could not fetch user, reason: {}", reason);
-//             return None;
-//         }
-//     }
-// }

@@ -1,35 +1,47 @@
 use crate::business::room;
 use crate::dtos::request_guards::{AdminAuthorization, ApiKey::ApiKey, UserAuthentication};
-use crate::dtos::{CreateRoomRequest, RoomDto};
+use crate::dtos::{responders::CustomStatusResponse, CreateRoomRequest, RoomDto};
 use crate::models::{self, CounterWrapper, CustomKey, MySqlDb};
 
-use rocket::http::{self, Status};
+use rocket::http::Status;
 use rocket::State;
 use rocket_contrib::json::Json;
 
 use chat_common_types::dtos::{self as common_dtos, RoomInfo};
+use std::collections::HashMap;
 
 use std::thread;
 
 #[post("/", data = "<request>")]
 pub fn create(
-    _user_authentication: UserAuthentication,
+    user_authentication: UserAuthentication,
     request: Json<CreateRoomRequest>,
     conn: MySqlDb,
-) -> http::Status {
-    println!("create room request: {:?}", request);
+) -> Result<Json<HashMap<String, i32>>, CustomStatusResponse> {
     if let Some(reason) = validate_create_room_request(&request) {
         println!("bad request");
-        return http::Status::new(400, reason);
+        return Err(CustomStatusResponse::new(Status::new(400, reason)));
     }
-    println!("{:?}", request);
+    if user_authentication.id != *&request.creator_user_id {
+        // id in cookie and in request body must be same.
+        return Err(CustomStatusResponse::new(Status::new(
+            403,
+            "Invalid request",
+        )));
+    }
+    // TODO: handling of user_ids.
     match room::create(request.into_inner(), &conn) {
-        Ok(_) => {
-            return http::Status::new(201, "Created");
+        Ok(id) => {
+            // Had to make this hash_map as I needed to send a json with id property
+            // if not hashmap, I would need to make a new struct.
+            // TODO: see if there is a better approach.
+            let mut result = HashMap::new();
+            result.insert("id".to_string(), id);
+            return Ok(Json(result));
         }
         Err(reason) => {
             //TODO: send appropriate response status.
-            return http::Status::new(400, reason);
+            return Err(CustomStatusResponse::new(Status::new(400, reason)));
         }
     }
 }

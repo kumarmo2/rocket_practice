@@ -1,6 +1,8 @@
+use crate::dal::last_insert_id;
 use crate::dtos::CreateRoomRequest;
 use crate::models::Room;
 use crate::utils;
+use diesel::dsl::select;
 use diesel::mysql::MysqlConnection;
 use diesel::prelude::*;
 use diesel::{result::Error, sql_types::Integer};
@@ -20,7 +22,7 @@ pub fn get_all(conn: &diesel::MysqlConnection) -> Result<Vec<Room>, &'static str
 pub fn create_from_request(
     request: CreateRoomRequest,
     conn: &MysqlConnection,
-) -> Result<(), &'static str> {
+) -> Result<i32, &'static str> {
     use crate::schema::rooms::dsl::*;
     let path = utils::generate_v4_base64_uuid();
     let room_name = request.room_name.unwrap_or(String::new());
@@ -35,7 +37,9 @@ pub fn create_from_request(
         .execute(conn)
     {
         Ok(_) => {
-            return Ok(());
+            // TODO: need to see how can I return the id in the same query.
+            let ids = select(last_insert_id).load(conn).unwrap();
+            return Ok(ids[0]);
         }
         Err(reason) => {
             println!("error creating room: {}", reason);

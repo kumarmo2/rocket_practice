@@ -8,14 +8,33 @@ use diesel::MysqlConnection;
 pub fn create(
     create_request: CreateRoomRequest,
     conn: &MysqlConnection,
-) -> Result<(), &'static str> {
+) -> Result<i32, &'static str> {
     match user_dal::get_by_id(create_request.creator_user_id, conn) {
         Ok(_) => {}
         Err(reason) => {
             return Err(reason);
         }
     }
-    return room::create_from_request(create_request, conn);
+
+    // Had to save the user id in local variable as I didn't design the dal layer correctly,
+    // its taking the ownership of the request and we need request.id later on.
+    // Since correcting the dal api will take some time, I am saving id in local variable for now.
+    let user_id = create_request.creator_user_id;
+    let room_id;
+    match room::create_from_request(create_request, conn) {
+        Ok(id) => {
+            room_id = id;
+        }
+        Err(reason) => {
+            return Err(reason);
+        }
+    }
+    let mut subs = vec![];
+    subs.push(RoomSubscriberInsertableDto::new(user_id, room_id));
+    match room_subscribers::add_members_to_room(&subs, conn) {
+        Ok(_) => Ok(room_id),
+        Err(reason) => Err(reason),
+    }
 }
 
 pub fn get_by_id(id: i32, conn: &MysqlConnection) -> Result<Room, &'static str> {

@@ -23,6 +23,7 @@ pub struct CreateRoomRequest {
     pub creator_user_id: i32,
     #[serde(rename = "roomName")]
     pub room_name: Option<String>,
+    // TODO: Think if it will be useful or not or else remove it.
     #[serde(rename = "isPublic")]
     pub is_public: Option<bool>,
 }
