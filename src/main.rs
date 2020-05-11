@@ -35,6 +35,7 @@ use routes::user;
 
 fn main() {
     rocket::ignite()
+        .mount("/me", routes![routes::profile::get,])
         .mount(
             "/",
             routes![

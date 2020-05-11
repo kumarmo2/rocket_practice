@@ -23,6 +23,7 @@ pub struct CreateRoomRequest {
     pub creator_user_id: i32,
     #[serde(rename = "roomName")]
     pub room_name: Option<String>,
+    // TODO: Think if it will be useful or not or else remove it.
     #[serde(rename = "isPublic")]
     pub is_public: Option<bool>,
 }
@@ -91,6 +92,15 @@ pub struct UserDto {
     pub id: i32,
     pub name: String,
     pub email: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Profile {
+    #[serde(rename = "userId")]
+    pub user_id: i32,
+    pub name: String,
+    pub email: String,
+    pub rooms: Option<Vec<RoomDto>>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

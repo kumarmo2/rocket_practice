@@ -48,3 +48,14 @@ pub fn get_members(room_id_input: i32, conn: &MysqlConnection) -> Option<Vec<Roo
         }
     }
 }
+
+pub fn get_rooms_of_user(
+    user_id_input: i32,
+    conn: &MysqlConnection,
+) -> Result<Vec<RoomSubscriber>, Error> {
+    use crate::schema::roomsubscribers::dsl::*;
+
+    roomsubscribers
+        .filter(member_id.eq(user_id_input))
+        .load(conn)
+}
