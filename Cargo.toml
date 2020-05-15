@@ -14,7 +14,7 @@ serde_json = "1.0"
 diesel = { version = "1.0.0", features = ["mysql"] }
 base64 = "0.12.1"
 uuid = {version = "0.8.1", features = ["v4"]}
-smol = "0.1.4"
+smol = "0.1.5"
 chat_common_types = {git = "https://github.com/kumarmo2/chat_common_types.git", branch = "master"}
 manager = { git = "https://github.com/kumarmo2/rabbitmq_manager.git", branch = "master"}
 validator = "0.10.0"
