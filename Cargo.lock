@@ -176,6 +176,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "blocking"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8c4970dd15cc5754d7b515cfe809a0aa04bcd6122e16aca21403bb3a753b128e"
+dependencies = [
+ "futures-channel",
+ "futures-io",
+ "futures-util",
+ "once_cell",
+ "parking",
+ "waker-fn",
+]
+
+[[package]]
 name = "blowfish"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -499,9 +513,9 @@ dependencies = [
 
 [[package]]
 name = "futures-channel"
-version = "0.3.4"
+version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0c77d04ce8edd9cb903932b608268b3fffec4163dc053b3b402bf47eac1f1a8"
+checksum = "f366ad74c28cca6ba456d95e6422883cfb4b252a83bed929c83abfdbbf2967d5"
 dependencies = [
  "futures-core",
  "futures-sink",
@@ -509,33 +523,36 @@ dependencies = [
 
 [[package]]
 name = "futures-core"
-version = "0.3.4"
+version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f25592f769825e89b92358db00d26f965761e094951ac44d3663ef25b7ac464a"
+checksum = "59f5fff90fd5d971f936ad674802482ba441b6f09ba5e15fd8b39145582ca399"
 
 [[package]]
 name = "futures-io"
-version = "0.3.4"
+version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a638959aa96152c7a4cddf50fcb1e3fede0583b27157c26e67d6f99904090dc6"
+checksum = "de27142b013a8e869c14957e6d2edeef89e97c289e69d042ee3a49acd8b51789"
 
 [[package]]
 name = "futures-sink"
-version = "0.3.4"
+version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3466821b4bc114d95b087b850a724c6f83115e929bc88f1fa98a3304a944c8a6"
+checksum = "3f2032893cb734c7a05d85ce0cc8b8c4075278e93b24b66f9de99d6eb0fa8acc"
 
 [[package]]
 name = "futures-task"
-version = "0.3.4"
+version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7b0a34e53cf6cdcd0178aa573aed466b646eb3db769570841fda0c7ede375a27"
+checksum = "bdb66b5f09e22019b1ab0830f7785bcea8e7a42148683f99214f73f8ec21a626"
+dependencies = [
+ "once_cell",
+]
 
 [[package]]
 name = "futures-util"
-version = "0.3.4"
+version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22766cf25d64306bedf0384da004d05c9974ab104fcc4528f1236181c18004c5"
+checksum = "8764574ff08b701a084482c3c7031349104b07ac897393010494beaa18ce32c6"
 dependencies = [
  "futures-channel",
  "futures-core",
@@ -543,6 +560,7 @@ dependencies = [
  "futures-sink",
  "futures-task",
  "memchr",
+ "pin-project",
  "pin-utils",
  "slab",
 ]
@@ -1102,6 +1120,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "parking"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "01b231bb075ab9f13baf704894d03941e51729b141a17be9e4a801b60369df1b"
+
+[[package]]
 name = "parking_lot"
 version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1200,6 +1224,26 @@ dependencies = [
  "maplit",
  "pest",
  "sha-1",
+]
+
+[[package]]
+name = "pin-project"
+version = "0.4.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "81d480cb4e89522ccda96d0eed9af94180b7a5f93fb28f66e1fd7d68431663d1"
+dependencies = [
+ "pin-project-internal",
+]
+
+[[package]]
+name = "pin-project-internal"
+version = "0.4.16"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a82996f11efccb19b685b14b5df818de31c1edcee3daa256ab5775dd98e72feb"
+dependencies = [
+ "proc-macro2 1.0.10",
+ "quote 1.0.3",
+ "syn 1.0.17",
 ]
 
 [[package]]
@@ -1640,13 +1684,15 @@ checksum = "05720e22615919e4734f6a99ceae50d00226c3c5aca406e102ebc33298214e0a"
 
 [[package]]
 name = "smol"
-version = "0.1.4"
+version = "0.1.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f92bf48a84965d40061dbd596c17cfe0bff734b5aaf94d9408b0b3e382f7c06e"
+checksum = "b7e021d2d8c0f8bb337bb9a1366a7ddfe7f3e5be3bf954a1338392219f08138b"
 dependencies = [
  "async-task",
+ "blocking",
  "crossbeam",
- "futures",
+ "futures-io",
+ "futures-util",
  "nix",
  "once_cell",
  "piper",
@@ -1894,6 +1940,12 @@ name = "void"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6a02e4885ed3bc0f2de90ea6dd45ebcbb66dacffe03547fadbb0eeae2770887d"
+
+[[package]]
+name = "waker-fn"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9571542c2ce85ce642e6b58b3364da2fb53526360dfb7c211add4f5c23105ff7"
 
 [[package]]
 name = "walkdir"
