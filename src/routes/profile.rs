@@ -34,7 +34,7 @@ pub fn get(
     let user: User = user_authentication.into();
     // TODO: should I make the fields as private?
     Ok(Json(Profile {
-        user_id: user.id,
+        id: user.id,
         name: user.name,
         email: user.email,
         rooms: Some(rooms),

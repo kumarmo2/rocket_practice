@@ -197,11 +197,13 @@ export default class SignupSignIn extends PureComponent {
           fullWidth
           placeholder="yourname@email.com"
           label="Email"
+          autoComplete
           required
         />
         {variant == signUpType && (
           <TextField
             onChange={this.handleNameChange}
+            autoComplete
             error={fullName.error}
             helperText={fullName.errorText}
             fullWidth
