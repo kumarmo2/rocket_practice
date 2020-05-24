@@ -89,7 +89,6 @@ fn validate_create_room_request(request: &CreateRoomRequest) -> Option<&'static 
 }
 
 #[get("/<id>")]
-// pub fn get<'a>(id: u32) -> RoomDto<'a> {
 pub fn get(
     id: i32,
     _custom_key: State<CustomKey>,
@@ -139,6 +138,7 @@ pub fn get_all(_api_key: ApiKey, conn: MySqlDb) -> Json<Vec<RoomDto>> {
     // Json(rooms)
 }
 
+// TODO: Remove this after we have made the room by path api.
 #[get("/<id>/info")]
 pub fn get_room_info(_api_key: ApiKey, conn: MySqlDb, id: i32) -> Result<Json<RoomInfo>, Status> {
     if id < 1 {
