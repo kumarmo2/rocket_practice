@@ -1,0 +1,4 @@
+target/
+static/
+public/
+**/node_modules

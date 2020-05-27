@@ -41,6 +41,7 @@ fn main() {
             routes![
                 routes::home::index,
                 routes::home::dummy,
+                routes::home::chat_room,
                 user::signin,
                 user::signout
             ],
@@ -70,6 +71,7 @@ fn main() {
         .mount("/public", StaticFiles::from("./public"))
         .manage(models::CounterWrapper::default())
         // TODO: read from the config.
+        // Pick this from config or env args if running in docker container.
         .manage(RabbitMqManager::new(
             "amqp://guest:guest@127.0.0.1:5672/%2f",
         ))
@@ -84,10 +86,6 @@ fn main() {
         }))
         .attach(models::MySqlDb::fairing())
         .attach(Template::fairing())
-        //  .attach(AdHoc::on_response("cors_respone", |_, res| {
-        //     // TODO: only set CORS headers for selected endpoints and not for all
-        //     res.set_header(Header::new("Access-Control-Allow-Origin", "*"));
-        // }))
         .register(catchers![
             error_catchers::bad_request,
             error_catchers::unauthorized

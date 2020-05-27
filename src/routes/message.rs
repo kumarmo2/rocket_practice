@@ -1,5 +1,5 @@
 use crate::business::message;
-use crate::dtos::request_guards::{AdminAuthorization, ApiKey::ApiKey};
+use crate::dtos::request_guards::{AdminAuthorization, UserAuthentication};
 use crate::dtos::MessageCreateRequest;
 use crate::models::MySqlDb;
 
@@ -13,7 +13,7 @@ use manager::RabbitMqManager;
 
 #[post("/", data = "<request_json>")]
 pub fn create(
-    _api_key: ApiKey,
+    user: UserAuthentication,
     rabbit: State<RabbitMqManager>,
     request_json: Json<MessageCreateRequest>,
     conn: MySqlDb,
@@ -21,6 +21,9 @@ pub fn create(
     match validate_create_message_request(&request_json) {
         Some(reason) => return Status::new(400, reason),
         None => {}
+    }
+    if user.id != *&request_json.sender_id {
+        return Status::new(403, "Cannot send message impersonating others");
     }
     match message::create(&request_json, &conn, &rabbit) {
         Some(id) => {

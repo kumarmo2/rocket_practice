@@ -51,7 +51,7 @@ pub fn create(
 #[post("/<id>/members", data = "<members_json>")]
 pub fn add_members(
     id: i32,
-    _api_key: ApiKey,
+    _user: UserAuthentication,
     members_json: Json<Vec<i32>>,
     conn: MySqlDb,
 ) -> Json<Result<bool, &'static str>> {
@@ -63,6 +63,8 @@ pub fn add_members(
         }
         None => {}
     }
+    // TODO: for now, any authenticated user can add member to any group,
+    // Need to add authorization here.
     Json(room::add_members(id, &members_json, &conn))
     // "adding member"
 }
