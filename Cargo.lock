@@ -122,9 +122,9 @@ dependencies = [
 
 [[package]]
 name = "base64"
-version = "0.12.1"
+version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "53d1ccbaf7d9ec9537465a97bf19edc1a4e158ecb49fc16178202238c569cc42"
+checksum = "3441f0f7b02788e948e47f457ca01f1d7e6d92c693bc132c22b087d3141c03ff"
 
 [[package]]
 name = "bcrypt"
@@ -132,7 +132,7 @@ version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6378bd17c4830c1b7ed644dde88f247b1560d46c68ff3da1b788984b09c0df31"
 dependencies = [
- "base64 0.12.1",
+ "base64 0.12.3",
  "blowfish",
  "byteorder",
  "getrandom",
@@ -1476,7 +1476,7 @@ dependencies = [
 name = "rocket_practice"
 version = "0.1.0"
 dependencies = [
- "base64 0.12.1",
+ "base64 0.12.3",
  "bcrypt",
  "chat_common_types",
  "diesel",
