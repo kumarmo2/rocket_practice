@@ -9,6 +9,12 @@ pub fn index() -> Template {
     // TODO: need to see if there is any alternate to providing the Empty struct.
     Template::render("index", Empty {})
 }
+// After we start doing server side rendering,
+#[get("/rooms/<path>")]
+pub fn chat_room(path: String) -> Template {
+    // TODO: need to see if there is any alternate to providing the Empty struct.
+    Template::render("index", Empty {})
+}
 
 #[get("/dummy")]
 pub fn dummy() -> &'static str {

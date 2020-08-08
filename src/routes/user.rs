@@ -164,26 +164,19 @@ pub fn cors_for_register_events_endpoint(id: i32) -> CorsResponder {
     CorsResponder {}
 }
 
-#[post("/<id>/events/register")]
+#[post("/events/register")]
 pub fn register_user_event_queue(
-    _api_key: ApiKey,
-    id: i32,
+    user: UserAuthentication,
     conn: MySqlDb,
     rabbit: State<RabbitMqManager>,
 ) -> Result<Json<ClientEventQueueNameWrapper>, CustomStatusResponse> {
-    if id < 1 {
-        return Err(CustomStatusResponse::new(Status::new(
-            400,
-            "invalid user id",
-        )));
-    }
-    match user_bl::get_user_by_id(id, &conn) {
+    match user_bl::get_user_by_id(user.id, &conn) {
         Ok(_) => {}
         Err(reason) => {
             return Err(CustomStatusResponse::new(Status::new(400, reason)));
         }
     }
-    match user_bl::register_user(id, &rabbit, &conn) {
+    match user_bl::register_user(user.id, &rabbit, &conn) {
         Some(queue_name) => return Ok(Json(ClientEventQueueNameWrapper { queue_name })),
         None => {
             return Err(CustomStatusResponse::new(Status::new(

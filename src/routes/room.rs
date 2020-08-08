@@ -51,7 +51,7 @@ pub fn create(
 #[post("/<id>/members", data = "<members_json>")]
 pub fn add_members(
     id: i32,
-    _api_key: ApiKey,
+    _user: UserAuthentication,
     members_json: Json<Vec<i32>>,
     conn: MySqlDb,
 ) -> Json<Result<bool, &'static str>> {
@@ -63,6 +63,8 @@ pub fn add_members(
         }
         None => {}
     }
+    // TODO: for now, any authenticated user can add member to any group,
+    // Need to add authorization here.
     Json(room::add_members(id, &members_json, &conn))
     // "adding member"
 }
@@ -89,7 +91,6 @@ fn validate_create_room_request(request: &CreateRoomRequest) -> Option<&'static 
 }
 
 #[get("/<id>")]
-// pub fn get<'a>(id: u32) -> RoomDto<'a> {
 pub fn get(
     id: i32,
     _custom_key: State<CustomKey>,
@@ -139,6 +140,7 @@ pub fn get_all(_api_key: ApiKey, conn: MySqlDb) -> Json<Vec<RoomDto>> {
     // Json(rooms)
 }
 
+// TODO: Remove this after we have made the room by path api.
 #[get("/<id>/info")]
 pub fn get_room_info(_api_key: ApiKey, conn: MySqlDb, id: i32) -> Result<Json<RoomInfo>, Status> {
     if id < 1 {

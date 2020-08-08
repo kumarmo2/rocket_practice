@@ -3,8 +3,7 @@ export const createUser = ({ email, fullName, password }) => {
   if (!email || !fullName || !password) {
     return Promise.reject('Enter All details');
   }
-  // return fetch('/api/users/', {
-  return api('/api/users/', {
+  return api('/api/v1/users', {
     method: 'POST',
     body: JSON.stringify({
       email,
