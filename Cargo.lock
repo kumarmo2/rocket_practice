@@ -422,16 +422,15 @@ dependencies = [
 
 [[package]]
 name = "diesel"
-version = "1.4.4"
+version = "1.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "33d7ca63eb2efea87a7f56a283acc49e2ce4b2bd54adf7465dc1d81fef13d8fc"
+checksum = "3e2de9deab977a153492a1468d1b1c0662c1cf39e5ea87d0c060ecd59ef18d8c"
 dependencies = [
  "byteorder",
  "diesel_derives",
  "mysqlclient-sys",
- "percent-encoding 2.1.0",
  "r2d2",
- "url 2.1.1",
+ "url 1.7.2",
 ]
 
 [[package]]
@@ -1235,7 +1234,7 @@ version = "0.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "59698ea79df9bf77104aefd39cc3ec990cb9693fb59c3b0a70ddf2646fdffb4b"
 dependencies = [
- "base64 0.12.1",
+ "base64 0.12.3",
  "once_cell",
  "regex",
 ]
