@@ -18,7 +18,7 @@ smol = "0.1.5"
 chat_common_types = {git = "https://github.com/kumarmo2/chat_common_types.git", branch = "master"}
 manager = { git = "https://github.com/kumarmo2/rabbitmq_manager.git", branch = "master"}
 validator = "0.10.1"
-bcrypt = "0.8.1"
+bcrypt = "0.8.2"
 jsonwebtoken = "5.0.1"
 time = "0.2.16"
 
