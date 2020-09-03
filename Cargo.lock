@@ -949,9 +949,9 @@ dependencies = [
 
 [[package]]
 name = "lapin"
-version = "1.2.1"
+version = "1.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5863bac1b1506b36aac7d038fc9e35917d85cb978f9314b8eaacf3277a2a0f41"
+checksum = "4a8cb60a56834fe9aca919f0ed6fcf635163510bb9a393107cbee566f170282d"
 dependencies = [
  "amq-protocol 6.0.0-rc12",
  "async-task",
@@ -1756,7 +1756,7 @@ dependencies = [
  "chat_common_types",
  "diesel",
  "jsonwebtoken",
- "lapin 1.2.1",
+ "lapin 1.2.3",
  "manager",
  "rocket",
  "rocket_contrib",
