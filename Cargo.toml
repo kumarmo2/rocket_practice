@@ -20,7 +20,7 @@ manager = { git = "https://github.com/kumarmo2/rabbitmq_manager.git", branch = "
 validator = "0.10.1"
 bcrypt = "0.8.1"
 jsonwebtoken = "5.0.1"
-time = "0.2.16"
+time = "0.2.21"
 
 [dependencies.rocket_contrib]
 version = "0.4.4"
