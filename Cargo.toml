@@ -12,7 +12,7 @@ lapin = "1.2.1"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 diesel = { version = "1.4.5", features = ["mysql"] }
-base64 = "0.12.3"
+base64 = "0.13.0"
 uuid = {version = "0.8.1", features = ["v4"]}
 smol = "0.1.5"
 chat_common_types = {git = "https://github.com/kumarmo2/chat_common_types.git", branch = "master"}
