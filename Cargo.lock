@@ -186,6 +186,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c17772156ef2829aadc587461c7753af20b7e8db1529bc66855add962a3b35d3"
 
 [[package]]
+name = "async-task"
+version = "4.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8ab27c1aa62945039e44edaeee1dc23c74cc0c303dd5fe0fb462a184f1c3a518"
+
+[[package]]
 name = "atty"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -949,12 +955,12 @@ dependencies = [
 
 [[package]]
 name = "lapin"
-version = "1.2.1"
+version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5863bac1b1506b36aac7d038fc9e35917d85cb978f9314b8eaacf3277a2a0f41"
+checksum = "e044d3d36b71f5f76cc3b73b5485e166f3f13355f73f46bf619d6f7794b2acc0"
 dependencies = [
  "amq-protocol 6.0.0-rc12",
- "async-task",
+ "async-task 4.0.2",
  "crossbeam-channel",
  "futures-core",
  "log 0.4.8",
@@ -1471,6 +1477,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "pin-project-lite"
+version = "0.1.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e555d9e657502182ac97b539fb3dae8b79cda19e3e4f8ffb5e8de4f18df93c95"
+
+[[package]]
 name = "pin-utils"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1478,13 +1490,13 @@ checksum = "8b870d8c151b6f2fb93e84a13146138f05d02ed11c7e7c54f8826aaaf7c9f184"
 
 [[package]]
 name = "pinky-swear"
-version = "4.0.0"
+version = "4.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "071f064dfa28151beb3a0b6aad0daad62b20d5c801132c9d4b366c5245685504"
+checksum = "9bf8cda6f8e1500338634e4e3ce90ac59eb7929a1e088b6946c742be1cc44dc1"
 dependencies = [
  "doc-comment",
- "log 0.4.8",
- "parking_lot 0.10.2",
+ "parking_lot 0.11.0",
+ "tracing",
 ]
 
 [[package]]
@@ -1756,7 +1768,7 @@ dependencies = [
  "chat_common_types",
  "diesel",
  "jsonwebtoken",
- "lapin 1.2.1",
+ "lapin 1.4.0",
  "manager",
  "rocket",
  "rocket_contrib",
@@ -1946,7 +1958,7 @@ version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1e750050315d7ce3c8bb24096e94ffab1f752bc067804801f8713c68366b025b"
 dependencies = [
- "async-task",
+ "async-task 3.0.0",
  "blocking",
  "crossbeam",
  "futures",
@@ -2175,6 +2187,23 @@ checksum = "758664fc71a3a69038656bee8b6be6477d2a6c315a6b81f7081f591bffa4111f"
 dependencies = [
  "serde",
 ]
+
+[[package]]
+name = "tracing"
+version = "0.1.21"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b0987850db3733619253fe60e17cb59b82d37c7e6c0236bb81e4d6b87c879f27"
+dependencies = [
+ "cfg-if",
+ "pin-project-lite",
+ "tracing-core",
+]
+
+[[package]]
+name = "tracing-core"
+version = "0.1.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f50de3927f93d202783f4513cda820ab47ef17f624b03c096e86ef00c67e6b5f"
 
 [[package]]
 name = "traitobject"
